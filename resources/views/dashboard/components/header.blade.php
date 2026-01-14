@@ -1,4 +1,4 @@
-  <header class="mb-5">
+  <header class="mb-4">
       <div class="header-top">
           <div class="container">
               <div class="logo">
@@ -81,11 +81,6 @@
                           <span><i class="bi bi-grid-fill"></i> Dashboard</span>
                       </a>
                   </li>
-                  <li class="menu-item {{ request()->routeIs('users*') ? 'active' : '' }} ">
-                      <a href="{{ route('users.index') }}" class='menu-link'>
-                          <span><i class="bi bi-person-fill"></i> Pengguna</span>
-                      </a>
-                  </li>
                   <li class="menu-item {{ request()->routeIs('services*') ? 'active' : '' }} ">
                       <a href="{{ route('services.index') }}" class='menu-link'>
                           <span><i class="bi bi-gear-fill"></i> Layanan</span>
@@ -93,7 +88,12 @@
                   </li>
                   <li class="menu-item {{ request()->routeIs('counters*') ? 'active' : '' }} ">
                       <a href="{{ route('counters.index') }}" class='menu-link'>
-                          <span><i class="bi bi-gear-fill"></i> Pemanggil</span>
+                          <span><i class="bi bi-gear-fill"></i> Loket / Pemanggil</span>
+                      </a>
+                  </li>
+                  <li class="menu-item {{ request()->routeIs('users*') ? 'active' : '' }} ">
+                      <a href="{{ route('users.index') }}" class='menu-link'>
+                          <span><i class="bi bi-person-fill"></i> Pengguna</span>
                       </a>
                   </li>
               </ul>

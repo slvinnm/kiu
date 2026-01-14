@@ -108,7 +108,7 @@
                             </div>
 
                             <div class="form-group mb-3" id="counter-container">
-                                <label for="counter_id" class="form-label">Loket / Counter</label>
+                                <label for="counter_id" class="form-label">Loket / Pemanggil</label>
                                 <select class="form-select @error('counter_id') is-invalid @enderror" id="counter_id"
                                     name="counter_id">
                                     <option value="">-- Pilih Loket --</option>

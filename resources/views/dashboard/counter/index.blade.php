@@ -54,7 +54,21 @@
                             <tr>
                                 <td>{{ $counter->service->name }}</td>
                                 <td>{{ $counter->name }}</td>
-                                <td>{{ Str::ucfirst($counter->status) }}</td>
+                                <td>
+                                    @if ($counter->status == 'open')
+                                        <span class="badge bg-success fs-6">
+                                            <i class="bi bi-door-open me-1"></i> Open (Buka)
+                                        </span>
+                                    @elseif($counter->status == 'break')
+                                        <span class="badge bg-warning text-dark fs-6">
+                                            <i class="bi bi-pause-circle me-1"></i> Break (Istirahat)
+                                        </span>
+                                    @else
+                                        <span class="badge bg-danger fs-6">
+                                            <i class="bi bi-door-closed me-1"></i> Closed (Tutup)
+                                        </span>
+                                    @endif
+                                </td>
                                 <td>
                                     <a href="{{ route('counters.edit', $counter) }}"
                                         class="btn rounded-pill btn-sm btn-primary">

@@ -68,7 +68,7 @@
                         </div>
 
                         <div class="mb-4">
-                            <h6 class="text-muted mb-1">Loket / Counter</h6>
+                            <h6 class="text-muted mb-1">Loket / Pemanggil</h6>
                             <p class="fs-5 fw-bold text-dark mb-1">
                                 {{ $user->counter->name ?? '-' }}
                             </p>

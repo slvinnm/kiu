@@ -19,6 +19,11 @@
     <link rel="stylesheet" crossorigin href="{{ asset('theme/dashboard/assets/compiled/css/app-dark.css') }}">
     <link rel="stylesheet" crossorigin href="{{ asset('theme/dashboard/assets/compiled/css/iconly.css') }}">
 
+    <style>
+        .page-heading {
+            margin: 0 0 0.1rem !important;
+        }
+    </style>
     @yield('css')
 </head>
 
