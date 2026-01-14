@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Queue;
 use App\Http\Requests\StoreQueueRequest;
 use App\Http\Requests\UpdateQueueRequest;
+use App\Models\Queue;
 
 class QueueController extends Controller
 {

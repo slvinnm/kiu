@@ -114,13 +114,13 @@
                   Apa anda yakin ingin keluar ?
               </div>
               <div class="modal-footer">
-                  <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
+                  <button type="button" class="btn rounded-pill btn-light-secondary" data-bs-dismiss="modal">
                       <i class="bx bx-x d-block d-sm-none"></i>
                       <span class="d-none d-sm-block">Batal</span>
                   </button>
                   <form method="POST" action="{{ route('logout') }}">
                       @csrf
-                      <button type="submit" class="btn btn-danger ms-1">
+                      <button type="submit" class="btn rounded-pill btn-danger ms-1">
                           <i class="bx bx-check d-block d-sm-none"></i>
                           <span class="d-none d-sm-block">Lanjut</span>
                       </button>

@@ -37,6 +37,9 @@
                 </div>
 
                 <div class="page-content">
+
+                    @include('dashboard.components.alert')
+
                     @yield('content')
                 </div>
 

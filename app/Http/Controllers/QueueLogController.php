@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\QueueLog;
 use App\Http\Requests\StoreQueueLogRequest;
 use App\Http\Requests\UpdateQueueLogRequest;
+use App\Models\QueueLog;
 
 class QueueLogController extends Controller
 {

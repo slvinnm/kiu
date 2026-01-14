@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Counter;
 use App\Http\Requests\StoreCounterRequest;
 use App\Http\Requests\UpdateCounterRequest;
+use App\Models\Counter;
 
 class CounterController extends Controller
 {
