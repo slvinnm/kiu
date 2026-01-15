@@ -31,6 +31,8 @@ class Queue extends Model
         'ticket_number',
         'sequence',
         'status',
+        'start_time',
+        'end_time',
     ];
 
     public function service()

@@ -52,94 +52,165 @@
         .btn-pulse {
             animation: pulse-blue 2s infinite;
         }
+
+        .hover-lift {
+            transition: all 0.2s ease-in-out;
+        }
+
+        .hover-lift:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .08) !important;
+        }
+
+        .badge-soft {
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            border: 1px solid transparent;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            line-height: 1;
+        }
+
+        .badge-soft i {
+            font-size: 1.1rem;
+            line-height: 1;
+            display: flex;
+            margin-top: -1px;
+        }
+
+        .badge-soft-warning {
+            background-color: #fff8e1;
+            color: #f57f17;
+        }
+
+        .badge-soft-success {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .badge-soft-danger {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+
+        .badge-soft:hover {
+            border-color: rgba(0, 0, 0, 0.1);
+            filter: brightness(0.95);
+        }
     </style>
 @endsection
 
 @section('content')
-    @php
-        $currentQueue = (object) [
-            'id' => 1,
-            'ticket_number' => 'A-012',
-            'status' => 'serving',
-            'service_name' => 'Poli Umum',
-            'start_time' => '2026-01-14 12:19:30',
-        ];
-
-        $nextQueue = (object) [
-            'ticket_number' => 'A-013',
-            'status' => 'waiting',
-            'service_name' => 'Poli Umum',
-        ];
-
-        $waitingList = [
-            (object) ['ticket_number' => 'A-013', 'is_online' => true],
-            (object) ['ticket_number' => 'A-014', 'is_online' => false],
-            (object) ['ticket_number' => 'A-015', 'is_online' => false],
-        ];
-
-        $historyList = [
-            (object) ['ticket_number' => 'A-011', 'status' => 'completed'],
-            (object) ['ticket_number' => 'A-010', 'status' => 'skipped'],
-        ];
-
-        $stats = (object) [
-            'waiting' => 15,
-            'completed' => 10,
-            'skipped' => 2,
-        ];
-
-        $serverTimeMs = 0;
-
-        if (isset($currentQueue) && $currentQueue->start_time) {
-            $serverTimeMs = strtotime($currentQueue->start_time) * 1000;
-        }
-    @endphp
-
     <section>
-        <div class="row mb-4">
-            <div class="col-md-4 mb-3 mb-md-0">
-                <div class="card border-0 shadow-sm rounded-4 h-100">
-                    <div class="card-body d-flex align-items-center p-3">
-                        <div class="avatar avatar-lg me-3">
-                            <img src="{{ asset('theme/dashboard/assets/compiled/jpg/1.jpg') }}" alt=""
-                                class="rounded-circle" style="width: 56px; height: 56px;">
-                        </div>
-                        <div>
-                            <h6 class="fw-bold text-dark mb-0">{{ Auth::user()->name }}</h6>
-                            <small class="text-muted">Staff / {{ '@' . Auth::user()->username }}</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        @php
+            $counter = Auth::user()->counter;
+            $currentStatus = $counter->status ?? 'closed';
+            $statusColor = match ($currentStatus) {
+                'open' => 'success',
+                'break' => 'warning',
+                'closed' => 'danger',
+                default => 'secondary',
+            };
+            $statusLabel = \App\Models\Counter::STATUS[$currentStatus] ?? 'Offline';
+        @endphp
 
-            <div class="col-md-4 mb-3 mb-md-0">
-                <div
-                    class="card border-0 shadow-sm rounded-4 h-100 bg-primary text-white position-relative overflow-hidden">
-                    <div class="card-body p-3 text-center d-flex flex-column justify-content-center">
-                        <small class="text-uppercase fw-bold" style="font-size: 0.7rem;">Active
-                            Counter</small>
-                        <h1 class="fw-bold mb-0 text-white">LOKET 01</h1>
-                    </div>
-                </div>
-            </div>
+        <div class="card bg-white border-0 shadow-sm rounded-4 mb-4">
+            <div class="card-body p-3">
+                <div class="row align-items-center g-3">
+                    <div class="col-12 col-md-5">
+                        <div class="d-flex align-items-center">
+                            <div class="position-relative me-3">
+                                <img src="{{ asset('theme/dashboard/assets/compiled/jpg/1.jpg') }}"
+                                    class="rounded-circle border border-2 border-white shadow-sm"
+                                    style="width: 54px; height: 54px; object-fit: cover;">
+                                <span
+                                    class="position-absolute bottom-0 start-100 translate-middle p-1 bg-success border border-white rounded-circle"></span>
+                            </div>
 
-            <div class="col-md-4">
-                <div class="card border-0 shadow-sm rounded-4 h-100">
-                    <div class="card-body p-0 d-flex h-100">
-                        <div class="flex-fill d-flex flex-column justify-content-center align-items-center border-end py-2">
-                            <span class="fw-bold text-dark fs-4">{{ $stats->waiting }}</span>
-                            <small class="text-muted" style="font-size: 0.65rem;">WAIT</small>
-                        </div>
-                        <div
-                            class="flex-fill d-flex flex-column justify-content-center align-items-center border-end py-2 bg-success bg-opacity-10">
-                            <span class="fw-bold text-success fs-4">{{ $stats->completed }}</span>
-                            <small class="text-success" style="font-size: 0.65rem;">DONE</small>
-                        </div>
-                        <div class="flex-fill d-flex flex-column justify-content-center align-items-center py-2">
-                            <span class="fw-bold text-danger fs-4">{{ $stats->skipped }}</span>
-                            <small class="text-muted" style="font-size: 0.65rem;">SKIP</small>
+                            <div>
+                                <h6 class="fw-bold mb-2 text-dark">{{ Auth::user()->name }}</h6>
+                                <div class="d-flex gap-2">
+
+                                    <div class="badge-soft badge-soft-warning hover-lift cursor-pointer" title="Menunggu">
+                                        <i class="bi bi-clock-history"></i>
+                                        <span>{{ $stats->waiting ?? 0 }}</span>
+                                    </div>
+
+                                    <div class="badge-soft badge-soft-success hover-lift cursor-pointer" title="Selesai">
+                                        <i class="bi bi-check-circle-fill"></i>
+                                        <span>{{ $stats->completed ?? 0 }}</span>
+                                    </div>
+
+                                    <div class="badge-soft badge-soft-danger hover-lift cursor-pointer" title="Dilewati">
+                                        <i class="bi bi-dash-circle-fill"></i>
+                                        <span>{{ $stats->skipped ?? 0 }}</span>
+                                    </div>
+
+                                </div>
+                            </div>
                         </div>
                     </div>
+
+                    <div class="col-12 col-md-4 text-md-center d-flex flex-column justify-content-center">
+                        <span class="badge bg-light text-dark border mb-1 align-self-md-center px-3 py-1">
+                            {{ $counter->name ?? 'No Counter' }}
+                        </span>
+                        <div class="d-flex align-items-center justify-content-md-center gap-2 text-muted small">
+                            <i class="bi bi-calendar-event mb-1"></i>
+                            <span id="live-date" class="fw-bold">...</span>
+                            <span class="mx-1">|</span>
+                            <span id="live-time" class="fw-bold text-primary"
+                                style="font-family: monospace; font-size: 1.1em;">...</span>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-3 text-end">
+                        @if ($counter)
+                            <div class="dropdown w-100">
+                                <button
+                                    class="btn btn-white border shadow-sm rounded-pill w-100 py-2 d-flex align-items-center justify-content-between px-3 hover-lift"
+                                    type="button" data-bs-toggle="dropdown" aria-expanded="false">
+
+                                    <div class="d-flex align-items-center">
+                                        <span class="rounded-circle me-2 shadow-sm"
+                                            style="width: 10px; height: 10px; background-color: var(--bs-{{ $statusColor }});">
+                                        </span>
+                                        <span class="fw-bold text-dark">{{ $statusLabel }}</span>
+                                    </div>
+
+                                    <i class="bi bi-chevron-down small text-muted"></i>
+                                </button>
+
+                                <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-4 mt-2 p-2 w-100">
+                                    <li class="dropdown-header text-uppercase small fw-bold text-muted mb-1">Set Status</li>
+
+                                    @foreach (\App\Models\Counter::STATUS as $key => $label)
+                                        <li>
+                                            <form action="#" method="POST">
+                                                @csrf @method('PATCH')
+                                                <input type="hidden" name="status" value="{{ $key }}">
+
+                                                <button
+                                                    class="dropdown-item rounded-3 py-2 d-flex align-items-center justify-content-between mb-1 {{ $currentStatus == $key ? 'bg-primary-subtle text-primary fw-bold' : '' }}">
+                                                    <span>{{ $label }}</span>
+                                                    @if ($currentStatus == $key)
+                                                        <i class="bi bi-check-circle-fill mb-2"></i>
+                                                    @endif
+                                                </button>
+                                            </form>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @else
+                            <div class="badge bg-danger rounded-pill p-2 w-100">Error: No Counter</div>
+                        @endif
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -148,17 +219,14 @@
             <div class="col-lg-8 mb-4">
 
                 <div class="card border-2 border-dashed shadow-none mb-4 bg-light text-center {{ $currentQueue ? 'd-none' : '' }}"
-                    style="border-style: dashed !important; border-color: #cbd5e1 !important;">
+                    style="border-style: dashed !important; border-color: #0073ff !important;">
                     <div class="card-body py-5">
                         <div class="mb-4">
-                            <div
-                                class="rounded-circle shadow-sm d-inline-flex align-items-center justify-content-center p-4">
-                                <i class="bi bi-megaphone text-primary" style="font-size: 3rem;"></i>
-                            </div>
+                            <i class="bi bi-megaphone text-primary" style="font-size: 3rem;"></i>
                         </div>
+
                         <h4 class="fw-bold text-dark">Loket Tersedia</h4>
 
-                        {{-- Logic: Jika ada antrian menunggu, tampilkan nomornya. Jika tidak, tampilkan info kosong --}}
                         @if ($nextQueue)
                             <p class="text-muted mb-4">
                                 Antrian berikutnya tersedia. <br>
@@ -217,7 +285,8 @@
                                     <div class="d-flex align-items-center mt-1">
                                         @if ($nextQueue)
                                             <h4 class="mb-0 fw-bold text-dark me-2">{{ $nextQueue->ticket_number }}</h4>
-                                            <span class="badge text-secondary border shadow-sm" style="font-size: 0.7rem;">
+                                            <span class="badge text-secondary border shadow-sm"
+                                                style="font-size: 0.7rem;">
                                                 Menunggu
                                             </span>
                                         @else
@@ -228,7 +297,8 @@
 
                                 @if ($nextQueue)
                                     <div class="text-end">
-                                        <small class="text-muted d-block" style="font-size: 0.7rem;">Total Menunggu</small>
+                                        <small class="text-muted d-block" style="font-size: 0.7rem;">Total
+                                            Menunggu</small>
                                         <span class="fw-bold text-dark small">{{ count($waitingList) ?? 0 }} Orang</span>
                                     </div>
                                 @endif
@@ -273,11 +343,9 @@
 
                     </div>
                 </div>
-
-
             </div>
 
-            <div class="col-lg-4">
+            <div class="col-lg-4 mb-4">
                 <div class="card shadow-sm border-0" style="height: 100%;">
                     <div class="card-header p-2">
                         <ul class="nav nav-pills nav-fill" id="pills-tab" role="tablist">
@@ -299,7 +367,7 @@
                         <div class="tab-content" id="pills-tabContent">
                             <div class="tab-pane fade show active" id="pills-waiting" role="tabpanel">
                                 <ul class="list-group list-group-flush">
-                                    @foreach ($waitingList as $q)
+                                    @forelse ($waitingList as $q)
                                         <li class="list-group-item d-flex justify-content-between align-items-center py-3">
                                             <div class="d-flex align-items-center">
                                                 <div class="bg-light rounded-circle d-flex align-items-center justify-content-center me-3 text-dark fw-bold"
@@ -321,19 +389,17 @@
                                                 <i class="bi bi-play-fill"></i>
                                             </button>
                                         </li>
-                                    @endforeach
-
-                                    @if (count($waitingList) == 0)
+                                    @empty
                                         <div class="text-center py-5">
                                             <p class="text-muted small">Tidak ada antrian menunggu</p>
                                         </div>
-                                    @endif
+                                    @endforelse
                                 </ul>
                             </div>
 
                             <div class="tab-pane fade" id="pills-history" role="tabpanel">
                                 <ul class="list-group list-group-flush">
-                                    @foreach ($historyList as $h)
+                                    @forelse ($historyList as $h)
                                         <li class="list-group-item d-flex justify-content-between align-items-center py-3">
                                             <div>
                                                 <span class="fw-bold text-muted">{{ $h->ticket_number }}</span>
@@ -346,7 +412,11 @@
                                                 @endif
                                             </div>
                                         </li>
-                                    @endforeach
+                                    @empty
+                                        <div class="text-center py-5">
+                                            <p class="text-muted small">Tidak ada riwayat antrian</p>
+                                        </div>
+                                    @endforelse
                                 </ul>
                             </div>
                         </div>
@@ -413,5 +483,24 @@
                 if (timerEl) timerEl.innerText = "00:00";
             }
         });
+
+        function updateClock() {
+            const now = new Date();
+            const optionsDate = {
+                weekday: 'long',
+                day: 'numeric',
+                month: 'short'
+            };
+            const dateString = now.toLocaleDateString('id-ID', optionsDate);
+            const timeString = now.toLocaleTimeString('id-ID', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+
+            document.getElementById('live-time').innerText = timeString;
+            document.getElementById('live-date').innerText = dateString;
+        }
+        setInterval(updateClock, 1000);
+        window.onload = updateClock;
     </script>
 @endsection

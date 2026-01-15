@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('ticket_number');
             $table->integer('sequence');
             $table->enum('status', ['waiting', 'called', 'serving', 'completed', 'skipped', 'cancelled']);
+            $table->time('start_time')->nullable();
+            $table->time('end_time')->nullable();
             $table->timestamps();
         });
     }

@@ -17,6 +17,12 @@ class Counter extends Model
         'break' => 'Istirahat',
     ];
 
+    public const STATUS_OPEN = 'open';
+
+    public const STATUS_CLOSED = 'closed';
+
+    public const STATUS_BREAK = 'break';
+
     protected $fillable = [
         'service_id',
         'name',
