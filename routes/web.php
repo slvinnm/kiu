@@ -1,10 +1,11 @@
 <?php
 
 use App\Http\Controllers\AuthenticationController;
-use App\Http\Controllers\CounterController;
+use App\Http\Controllers\Dashboard\CounterController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Dashboard\UserController;
-use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\Dashboard\ServiceController;
+use App\Http\Controllers\Frontend\TouchController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -31,3 +32,5 @@ Route::group(['prefix' => 'dashboard', 'middleware' => 'auth'], function () {
     Route::put('services/{service}/toggle-status', [ServiceController::class, 'toggleStatus'])->name('services.toggle-status');
     Route::resource('counters', CounterController::class);
 });
+
+Route::get('/touch', [TouchController::class, 'index'])->name('touch.index');
