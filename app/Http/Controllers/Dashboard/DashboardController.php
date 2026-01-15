@@ -95,14 +95,14 @@ class DashboardController extends Controller
             ? strtotime($currentQueue->start_time) * 1000
             : 0;
 
-        // dd(compact(
-        //     'currentQueue',
-        //     'nextQueue',
-        //     'waitingList',
-        //     'historyList',
-        //     'stats',
-        //     'serverTimeMs'
-        // ));
+        // dd([
+        //     'currentQueue' => $currentQueue->toArray(),
+        //     'nextQueue'    => $nextQueue->toArray(),
+        //     'waitingList'  => $waitingList->toArray(),
+        //     'historyList'  => $historyList->toArray(),
+        //     'stats'        => $stats,
+        //     'serverTimeMs' => $serverTimeMs,
+        // ]);
 
         return view('dashboard.staff_index', compact(
             'currentQueue',

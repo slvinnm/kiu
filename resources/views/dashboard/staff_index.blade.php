@@ -74,7 +74,7 @@
                 <div class="row align-items-center g-3">
                     <div class="col-12 col-md-4">
                         <div class="d-flex align-items-center">
-                            <div class="position-relative me-3">
+                            <div class="position-relative me-4">
                                 <img src="{{ asset('theme/dashboard/assets/compiled/jpg/1.jpg') }}"
                                     class="rounded-circle border border-2 border-secondary-subtle shadow-sm"
                                     style="width: 60px; height: 60px; object-fit: cover;"> <span
@@ -92,25 +92,25 @@
 
                                 <div class="d-flex gap-2 flex-wrap">
 
-                                    <div class="badge bg-warning-subtle text-warning-emphasis px-2 py-1 hover-lift cursor-pointer icon-fix"
+                                    <div class="badge bg-warning-subtle text-warning-emphasis px-3 py-1 hover-lift"
                                         data-bs-toggle="tooltip" title="Total Menunggu">
                                         <i class="bi bi-clock-history me-1"></i>
                                         <span>{{ $stats->waiting ?? 0 }}</span>
                                     </div>
 
-                                    <div class="badge bg-success-subtle text-success-emphasis px-2 py-1 hover-lift cursor-pointer icon-fix"
+                                    <div class="badge bg-success-subtle text-success-emphasis px-3 py-1 hover-lift"
                                         data-bs-toggle="tooltip" title="Total Selesai">
                                         <i class="bi bi-check-circle-fill me-1"></i>
                                         <span>{{ $stats->completed ?? 0 }}</span>
                                     </div>
 
-                                    <div class="badge bg-danger-subtle text-danger-emphasis px-2 py-1 hover-lift cursor-pointer icon-fix"
+                                    <div class="badge bg-danger-subtle text-danger-emphasis px-3 py-1 hover-lift"
                                         data-bs-toggle="tooltip" title="Total Dilewati">
                                         <i class="bi bi-dash-circle-fill me-1"></i>
                                         <span>{{ $stats->skipped ?? 0 }}</span>
                                     </div>
 
-                                    <div class="badge bg-primary-subtle text-primary-emphasis px-2 py-1 hover-lift cursor-pointer icon-fix"
+                                    <div class="badge bg-primary-subtle text-primary-emphasis px-3 py-1 hover-lift"
                                         data-bs-toggle="tooltip" title="Rata-rata Waktu Layanan">
                                         <i class="bi bi-stopwatch-fill me-1"></i>
                                         <span>{{ $stats->avg_time ?? '0m' }}</span>
@@ -163,8 +163,11 @@
 
                                 @foreach (\App\Models\Counter::STATUS as $key => $label)
                                     <li>
-                                        <form action="#" method="POST">
-                                            <button
+                                        <form action="{{ route('counters.set-status', $counter->id) }}" method="POST">
+                                            @csrf
+                                            @method('PUT')
+                                            <input type="hidden" name="status" value="{{ $key }}">
+                                            <button type="submit"
                                                 class="dropdown-item rounded-3 py-2 d-flex align-items-center justify-content-between mb-1 {{ $currentStatus == $key ? 'active' : '' }}">
                                                 <span>{{ $label }}</span>
                                                 @if ($currentStatus == $key)
@@ -182,7 +185,7 @@
         </div>
 
         <div class="row">
-            <div class="col-lg-8 mb-4">
+            <div class="col-lg-8">
                 @if (!$currentQueue)
                     <div class="card border-2 border-dashed shadow-none mb-4 bg-body-tertiary text-center"
                         style="border-style: dashed !important; border-color: var(--bs-primary) !important;">
@@ -198,9 +201,14 @@
                                     Antrian berikutnya tersedia. <br>
                                     Siap memanggil tiket <strong>{{ $nextQueue->ticket_number }}</strong> ?
                                 </p>
-                                <button class="btn btn-primary btn-lg rounded-pill px-5 py-3 shadow-sm btn-pulse">
-                                    <i class="bi bi-broadcast me-2"></i> Panggil {{ $nextQueue->ticket_number }}
-                                </button>
+                                <form action="{{ route('queues.call', $nextQueue->id) }}" method="POST">
+                                    @csrf
+                                    @method('PUT')
+                                    <button type="submit"
+                                        class="btn btn-primary btn-lg rounded-pill px-5 py-3 shadow-sm btn-pulse">
+                                        <i class="bi bi-broadcast me-2"></i> Panggil {{ $nextQueue->ticket_number }}
+                                    </button>
+                                </form>
                             @else
                                 <p class="text-muted mb-4">Belum ada antrian baru. Menunggu pengunjung...</p>
                                 <button class="btn btn-secondary btn-lg rounded-pill px-5 py-3 shadow-sm" disabled>
@@ -210,7 +218,7 @@
                         </div>
                     </div>
                 @else
-                    <div class="card border-0 shadow-lg rounded-4 overflow-hidden h-100 ">
+                    <div class="card border-0 shadow-lg rounded-4 ">
                         <div
                             class="card-header border-0 pt-4 px-4 d-flex justify-content-between align-items-center bg-transparent">
                             <div>
@@ -223,13 +231,13 @@
                             </div>
                             <div class="text-muted bg-body-secondary rounded-pill px-3 py-1">
                                 <i class="bi bi-stopwatch me-2"></i>
-                                <span class="fw-bold font-monospace text-body-emphasis" id="timer">00:00</span>
+                                <span class="fw-bold font-monospace text-body-emphasis" id="timer">00:00:00</span>
                             </div>
                         </div>
 
-                        <div class="card-body text-center px-4 pb-4 pt-2 d-flex flex-column justify-content-center">
+                        <div class="card-body text-center d-flex flex-column justify-content-center">
 
-                            <div class="mb-2">
+                            <div class="mb-4">
                                 <small class="text-uppercase text-muted fw-bold letter-spacing-2 mb-2 d-block">Nomor
                                     Antrian</small>
                                 <div class="d-inline-block position-relative">
@@ -240,58 +248,17 @@
                                 </div>
                             </div>
 
-                            <div class="my-4">
-                                <div
-                                    class="bg-body-tertiary border border-opacity-10 rounded-3 p-3 text-start d-flex justify-content-between align-items-center position-relative overflow-hidden">
-                                    <div class="position-absolute start-0 top-0 bottom-0 bg-primary" style="width: 4px;">
-                                    </div>
-
-                                    <div class="ps-2">
-                                        <small class="text-uppercase text-muted fw-bold"
-                                            style="font-size: 0.65rem; letter-spacing: 1px;">
-                                            <i class="bi bi-arrow-right-circle me-1"></i> Persiapan Berikutnya
-                                        </small>
-                                        <div class="d-flex align-items-center mt-1">
-                                            @if ($nextQueue)
-                                                <h4 class="mb-0 fw-bold text-body-emphasis me-2">
-                                                    {{ $nextQueue->ticket_number }}</h4>
-                                                <span
-                                                    class="badge bg-secondary-subtle text-secondary-emphasis border shadow-sm"
-                                                    style="font-size: 0.7rem;">
-                                                    Menunggu
-                                                </span>
-                                            @else
-                                                <span class="text-muted fst-italic small">Tidak ada antrian</span>
-                                            @endif
-                                        </div>
-                                    </div>
-
-                                    @if ($nextQueue)
-                                        <div class="text-end">
-                                            <small class="text-muted d-block" style="font-size: 0.7rem;">Total
-                                                Menunggu</small>
-                                            <span class="fw-bold text-body small">{{ count($waitingList) ?? 0 }}
-                                                Orang</span>
-                                        </div>
-                                    @endif
-                                </div>
-                            </div>
-
                             <div class="row g-3 mb-4">
                                 <div class="col-6">
                                     <button class="btn btn-warning w-100 btn-lg text-white shadow-sm rounded-3">
-                                        <div class="d-flex flex-column align-items-center justify-content-center">
-                                            <i class="bi bi-arrow-counterclockwise fs-4 mb-3"></i>
-                                            <span class="fw-bold small">Panggil Ulang</span>
-                                        </div>
+                                        <i class="bi bi-arrow-counterclockwise fs-4"></i>
+                                        <span class="fw-bold small">Panggil Ulang</span>
                                     </button>
                                 </div>
                                 <div class="col-6">
                                     <button class="btn btn-success w-100 btn-lg shadow rounded-3">
-                                        <div class="d-flex flex-column align-items-center justify-content-center">
-                                            <i class="bi bi-check-lg fs-4 mb-3"></i>
-                                            <span class="fw-bold small">Selesaikan</span>
-                                        </div>
+                                        <i class="bi bi-check-lg fs-4"></i>
+                                        <span class="fw-bold small">Selesaikan</span>
                                     </button>
                                 </div>
                             </div>
@@ -317,8 +284,8 @@
                 @endif
             </div>
 
-            <div class="col-lg-4 mb-4">
-                <div class="card shadow-sm border-0">
+            <div class="col-lg-4">
+                <div class="card  shadow-sm border-0">
                     <div class="card-header p-2">
                         <ul class="nav nav-pills nav-fill" id="pills-tab" role="tablist">
                             <li class="nav-item" role="presentation">
@@ -335,7 +302,7 @@
                             </li>
                         </ul>
                     </div>
-                    <div class="card-body p-0 mt-2" style="max-height: 420px; height: 420px; overflow-y: auto;">
+                    <div class="card-body rounded p-0 mt-2" style="max-height: 500px; overflow-y: auto;">
                         <div class="tab-content" id="pills-tabContent">
                             <div class="tab-pane fade show active" id="pills-waiting" role="tabpanel">
                                 <ul class="list-group list-group-flush">
@@ -400,7 +367,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const queueId = "{{ $currentQueue->id ?? 'no-queue' }}";
-            const isServing = "{{ isset($currentQueue) && $currentQueue->status == 'serving' ? 'yes' : 'no' }}";
+            const isServing = "{{ isset($currentQueue) }}";
             const serverStartTime = parseInt("{{ $serverTimeMs ?? 0 }}");
             const storageKey = `queue_start_${queueId}`;
             const timerEl = document.getElementById('timer');
@@ -441,7 +408,7 @@
                 }, 1000);
             }
 
-            if (isServing === 'yes') {
+            if (isServing) {
                 startTimer();
             } else {
                 if (queueId !== 'no-queue') localStorage.removeItem(storageKey);

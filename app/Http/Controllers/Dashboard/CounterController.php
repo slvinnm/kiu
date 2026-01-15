@@ -85,6 +85,19 @@ class CounterController extends Controller
         return to_route('counters.index')->with('success', 'Loket pemanggil berhasil diperbarui.');
     }
 
+    public function setStatus(Request $request, Counter $counter)
+    {
+        $validated = $request->validate(
+            [
+                'status' => ['required', 'in:' . implode(',', array_keys(Counter::STATUS))],
+            ]
+        );
+
+        $counter->update($validated);
+
+        return to_route('dashboard')->with('success', 'Status loket pemanggil berhasil diubah.');
+    }
+
     /**
      * Remove the specified resource from storage.
      */

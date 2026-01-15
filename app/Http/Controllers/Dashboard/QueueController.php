@@ -3,65 +3,58 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreQueueRequest;
-use App\Http\Requests\UpdateQueueRequest;
+use App\Models\Counter;
 use App\Models\Queue;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class QueueController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function callQueue(Queue $queue)
     {
-        //
-    }
+        $user = Auth::user();
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
+        if (! $user->counter) {
+            abort(403, 'User tidak terhubung dengan counter.');
+        }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreQueueRequest $request)
-    {
-        //
-    }
+        $counter = $user->counter;
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Queue $queue)
-    {
-        //
-    }
+        if ($counter->status !== Counter::STATUS_OPEN) {
+            return back()->with('error', 'Counter sedang tidak tersedia.');
+        }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Queue $queue)
-    {
-        //
-    }
+        if ($queue->service_id !== $counter->service_id) {
+            abort(403, 'Queue tidak sesuai dengan layanan counter.');
+        }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateQueueRequest $request, Queue $queue)
-    {
-        //
-    }
+        if ($queue->status !== Queue::STATUS_WAITING) {
+            return back()->with('error', 'Queue tidak dapat dipanggil.');
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Queue $queue)
-    {
-        //
+        if ($queue->created_at->toDateString() !== now()->toDateString()) {
+            return back()->with('error', 'Queue sudah tidak valid.');
+        }
+
+        $hasActiveQueue = Queue::where('counter_id', $counter->id)
+            ->whereIn('status', [
+                Queue::STATUS_CALLED,
+                Queue::STATUS_SERVING,
+            ])
+            ->exists();
+
+        if ($hasActiveQueue) {
+            return back()->with('error', 'Masih ada antrian aktif di counter ini.');
+        }
+
+        DB::transaction(function () use ($queue, $counter) {
+            $queue->update([
+                'counter_id' => $counter->id,
+                'status' => Queue::STATUS_CALLED,
+                'start_time' => now(),
+            ]);
+        });
+
+        return back()->with('success', 'Nomor ' . $queue->ticket_number . ' berhasil dipanggil.');
     }
 }

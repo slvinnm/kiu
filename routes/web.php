@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\Dashboard\CounterController;
 use App\Http\Controllers\Dashboard\DashboardController;
+use App\Http\Controllers\Dashboard\QueueController;
 use App\Http\Controllers\Dashboard\ServiceController;
 use App\Http\Controllers\Dashboard\UserController;
 use App\Http\Controllers\Frontend\TouchController;
@@ -28,9 +29,14 @@ Route::group(['prefix' => 'dashboard', 'middleware' => 'auth'], function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::resource('users', UserController::class);
+
     Route::resource('services', ServiceController::class);
     Route::put('services/{service}/toggle-status', [ServiceController::class, 'toggleStatus'])->name('services.toggle-status');
+
     Route::resource('counters', CounterController::class);
+    Route::put('counters/{counter}/set-status', [CounterController::class, 'setStatus'])->name('counters.set-status');
+
+    Route::put('queues/{queue}/call', [QueueController::class, 'callQueue'])->name('queues.call');
 });
 
 Route::get('/touch', [TouchController::class, 'index'])->name('touch.index');
