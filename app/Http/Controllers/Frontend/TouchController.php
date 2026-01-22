@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Events\GotQueue;
 use App\Http\Controllers\Controller;
 use App\Models\Queue;
 use App\Models\QueueLog;
@@ -74,6 +75,8 @@ class TouchController extends Controller
                     'queue_id' => $queue->id,
                     'event' => QueueLog::EVENT_CREATED,
                 ]);
+
+                broadcast(new GotQueue($service));
             });
 
             Alert::success('Berhasil', 'Nomor antrian Anda: ' . $ticketNumber);

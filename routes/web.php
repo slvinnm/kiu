@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AjaxController;
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\Dashboard\CounterController;
 use App\Http\Controllers\Dashboard\DashboardController;
@@ -37,6 +38,10 @@ Route::group(['prefix' => 'dashboard', 'middleware' => 'auth'], function () {
     Route::put('counters/{counter}/set-status', [CounterController::class, 'setStatus'])->name('counters.set-status');
 
     Route::put('queues/{queue}/call', [QueueController::class, 'callQueue'])->name('queues.call');
+});
+
+Route::group(['prefix' => 'ajax'], function () {
+    Route::get('/dashboard/staff/current-queue', [AjaxController::class, 'getCurrentQueue'])->name('ajax.dashboard.staff.current-queue');
 });
 
 Route::get('/touch', [TouchController::class, 'index'])->name('touch.index');

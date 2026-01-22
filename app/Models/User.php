@@ -65,4 +65,13 @@ class User extends Authenticatable
     {
         return $this->hasMany(Queue::class);
     }
+
+    public function canAccessService($serviceId)
+    {
+        if ($this->counter && $this->counter->service_id == $serviceId) {
+            return true;
+        }
+
+        return false;
+    }
 }
