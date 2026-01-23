@@ -2,8 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\CallQueue;
+use App\Events\GotQueue;
+use App\Models\Counter;
 use App\Models\Queue;
+use App\Models\Service;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class AjaxController extends Controller
 {
@@ -75,15 +81,6 @@ class AjaxController extends Controller
             ? strtotime($currentQueue->start_time) * 1000
             : 0;
 
-        // dd([
-        //     'currentQueue' => $currentQueue->toArray(),
-        //     'nextQueue'    => $nextQueue->toArray(),
-        //     'waitingList'  => $waitingList->toArray(),
-        //     'historyList'  => $historyList->toArray(),
-        //     'stats'        => $stats,
-        //     'serverTimeMs' => $serverTimeMs,
-        // ]);
-
         return response()->json([
             'user' => $user,
             'counter' => $counter,
@@ -94,6 +91,162 @@ class AjaxController extends Controller
             'historyList' => $historyList,
             'stats' => $stats,
             'serverTimeMs' => $serverTimeMs,
+        ], 200);
+    }
+
+    public function setStatusCounter(Request $request, Counter $counter)
+    {
+        $validated = $request->validate(
+            [
+                'status' => ['required', 'in:' . implode(',', array_keys(Counter::STATUS))],
+            ]
+        );
+
+        $counter->update($validated);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Status loket pemanggil berhasil diubah.',
+        ], 200);
+    }
+
+    public function callQueue(Queue $queue)
+    {
+        $user = Auth::user();
+
+        if (! $user->counter) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'User tidak terhubung dengan counter.',
+            ], 403);
+        }
+
+        $counter = $user->counter;
+
+        if ($counter->status !== Counter::STATUS_OPEN) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Counter sedang tidak tersedia untuk melayani.',
+            ], 400);
+        }
+
+        if ($queue->service_id !== $counter->service_id) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Queue tidak sesuai dengan layanan counter.',
+            ], 400);
+        }
+
+        if ($queue->status !== Queue::STATUS_WAITING) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Queue tidak dapat dipanggil.',
+            ], 400);
+        }
+
+        $hasActiveQueue = Queue::where('counter_id', $counter->id)
+            ->whereIn('status', [
+                Queue::STATUS_CALLED,
+                Queue::STATUS_SERVING,
+            ])
+            ->exists();
+
+        if ($hasActiveQueue) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Masih ada antrian aktif di counter ini.',
+            ], 400);
+        }
+
+        DB::transaction(function () use ($queue, $counter) {
+            $queue->update([
+                'counter_id' => $counter->id,
+                'status' => Queue::STATUS_CALLED,
+                'start_time' => now(),
+            ]);
+        });
+
+        broadcast(new CallQueue($queue));
+        broadcast(new GotQueue($queue->service));
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Nomor ' . $queue->ticket_number . ' berhasil dipanggil.',
+        ], 200);
+    }
+
+    public function completeQueue(Queue $queue)
+    {
+        if ($queue->status !== Queue::STATUS_SERVING) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Queue tidak dapat diselesaikan.',
+            ], 400);
+        }
+
+        $queue->update([
+            'status' => Queue::STATUS_COMPLETED,
+            'end_time' => now(),
+        ]);
+
+        broadcast(new CallQueue($queue));
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Nomor ' . $queue->ticket_number . ' berhasil diselesaikan.',
+        ], 200);
+    }
+
+    public function directCallQueue(Queue $queue)
+    {
+        $user = Auth::user();
+
+        if (! $user->counter) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'User tidak terhubung dengan counter.',
+            ], 403);
+        }
+
+        $counter = $user->counter;
+
+        if ($counter->status !== Counter::STATUS_OPEN) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Counter sedang tidak tersedia untuk melayani.',
+            ], 400);
+        }
+
+        if ($queue->service_id !== $counter->service_id) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Queue tidak sesuai dengan layanan counter.',
+            ], 400);
+        }
+
+        if ($queue->status !== Queue::STATUS_WAITING) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Queue tidak dapat dipanggil.',
+            ], 400);
+        }
+
+        broadcast(new CallQueue($queue));
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Nomor ' . $queue->ticket_number . ' berhasil dipanggil.',
+        ], 200);
+    }
+
+    public function toggleStatus(Service $service)
+    {
+        $service->is_active = ! $service->is_active;
+        $service->save();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Status layanan berhasil diubah.',
         ], 200);
     }
 }

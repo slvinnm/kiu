@@ -3,6 +3,8 @@
 @section('title', 'Counter Dashboard')
 
 @section('css')
+    <link href="{{ asset('theme/dashboard/assets/extensions/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet">
+
     <style>
         .fw-black {
             font-weight: 800;
@@ -254,7 +256,7 @@
                                     <p class="text-muted mb-4">Antrian berikutnya <span class="fw-bold"
                                             x-text="nextQueue.ticket_number"></span> siap dipanggil.</p>
                                     <div class="d-flex justify-content-center">
-                                        <button @click="callQueue(nextQueue.id)"
+                                        <button type="button" @click="callQueue(nextQueue.id)"
                                             class="btn btn-primary btn-lg rounded-pill px-5 py-3 shadow-lg btn-pulse-primary fw-bold">
                                             <i class="bi bi-broadcast me-2"></i> Panggil Sekarang
                                         </button>
@@ -267,7 +269,8 @@
                                     <p class="text-muted mb-4 px-5">Belum ada antrian baru. Silahkan istirahat sejenak atau
                                         menunggu pengunjung.</p>
                                     <div>
-                                        <button class="btn text-muted border rounded-pill px-4 py-2" disabled>
+                                        <button type="button" class="btn text-muted border rounded-pill px-4 py-2"
+                                            disabled>
                                             <span class="spinner-border spinner-border-sm me-2"></span> Menunggu Data...
                                         </button>
                                     </div>
@@ -305,14 +308,14 @@
 
                                 <div class="row g-3 px-md-5 mb-5">
                                     <div class="col-6">
-                                        <button @click="callQueue(currentQueue.id)"
+                                        <button type="button" @click="callQueue(currentQueue.id)"
                                             class="btn btn-white text-warning border border-warning w-100 py-3 rounded-4 btn-hover-scale">
                                             <i class="bi bi-arrow-counterclockwise fs-4 me-2"></i>
                                             <span class="fw-bold fs-5">Panggil Ulang</span>
                                         </button>
                                     </div>
                                     <div class="col-6">
-                                        <button @click="completeQueue(currentQueue.id)"
+                                        <button type="button" @click="completeQueue(currentQueue.id)"
                                             class="btn btn-success w-100 py-3 rounded-4 btn-hover-scale">
                                             <i class="bi bi-check-lg fs-4 me-2"></i>
                                             <span class="fw-bold fs-5">Selesaikan</span>
@@ -329,11 +332,12 @@
                                 </div>
 
                                 <div class="d-flex justify-content-center gap-3">
-                                    <button @click="skipQueue(currentQueue.id)"
+                                    <button type="button" @click="skipQueue(currentQueue.id)"
                                         class="btn btn-outline-danger btn-sm rounded-pill px-4 hover-lift">
                                         <i class="bi bi-slash-circle me-1"></i> Lewati (Skip)
                                     </button>
-                                    <button class="btn btn-outline-secondary btn-sm rounded-pill px-4 hover-lift">
+                                    <button type="button"
+                                        class="btn btn-outline-secondary btn-sm rounded-pill px-4 hover-lift">
                                         <i class="bi bi-arrow-left-right me-1"></i> Transfer
                                     </button>
                                 </div>
@@ -349,13 +353,13 @@
                         <div class="card-header bg-transparent border-0 p-2">
                             <ul class="nav nav-pills nav-fill bg-light-subtle p-1 rounded-pill">
                                 <li class="nav-item">
-                                    <button class="nav-link rounded-pill fw-bold small py-2"
+                                    <button type="button" class="nav-link rounded-pill fw-bold small py-2"
                                         :class="tab === 'waiting' ? 'active' : ''" @click="tab='waiting'">
                                         Menunggu (<span x-text="waitingList.length"></span>)
                                     </button>
                                 </li>
                                 <li class="nav-item">
-                                    <button class="nav-link rounded-pill fw-bold small py-2"
+                                    <button type="button" class="nav-link rounded-pill fw-bold small py-2"
                                         :class="tab === 'history' ? 'active' : ''" @click="tab='history'">
                                         Riwayat
                                     </button>
@@ -379,10 +383,10 @@
                                                         Customer</small>
                                                 </div>
                                             </div>
-                                            <button @click="callQueue(q.id)"
-                                                class="btn btn-light btn-sm rounded-circle shadow-sm text-primary"
-                                                title="Panggil Langsung">
-                                                <i class="bi bi-play-fill"></i>
+                                            <button type="button" @click="directCallQueue(q.id)"
+                                                class="btn btn-light btn-sm rounded-circle shadow-sm text-primary">
+                                                <i class="bi bi-play-fill" data-bs-toggle="tooltip"
+                                                    title="Panggil Langsung"></i>
                                             </button>
                                         </div>
                                     </template>
@@ -430,16 +434,18 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </section>
 @endsection
 
 @section('js')
+    <script src="{{ asset('theme/dashboard/assets/extensions/sweetalert2/sweetalert2.min.js') }}"></script>
+
     <script>
         document.addEventListener('alpine:init', () => {
             Alpine.data('counterDashboard', () => ({
                 isLoading: true,
+                errorMessage: '',
                 user: null,
                 counter: null,
                 service: null,
@@ -453,7 +459,6 @@
                 nextQueue: null,
                 waitingList: [],
                 historyList: [],
-                endpointUrl: "{{ route('ajax.dashboard.staff.current-queue') }}",
                 statusMap: {
                     'open': 'Buka',
                     'break': 'Istirahat',
@@ -488,6 +493,7 @@
                         label: 'Avg Time'
                     }
                 ],
+                csrfToken: document.querySelector('meta[name="csrf-token"]').content,
 
                 async init() {
                     setInterval(() => this.updateClock(), 1000);
@@ -501,12 +507,16 @@
                 },
 
                 async fetchData(showLoading = false) {
+
                     if (showLoading) this.isLoading = true;
 
                     try {
-                        const res = await fetch(this.endpointUrl, {
+                        const url = "{{ route('ajax.dashboard.staff.current-queue') }}";
+                        const res = await fetch(url, {
+                            method: 'GET',
                             headers: {
-                                'Accept': 'application/json'
+                                'Accept': 'application/json',
+                                'X-CSRF-TOKEN': this.csrfToken,
                             }
                         });
                         const data = await res.json();
@@ -532,48 +542,81 @@
                 },
 
                 initBroadcastListener() {
-                    console.log(`Listening to channel: service.${this.counter.service_id}`);
-
                     Echo.private(`service.${this.counter.service_id}`)
                         .listen(".got-queue", (event) => {
-                            console.log("Event Received, refreshing data...");
                             this.fetchData(false);
                         });
                 },
 
                 async sendAction(url, method = 'PUT', body = {}) {
+                    this.isLoading = true;
+
                     try {
-                        await fetch(url, {
-                            method: method,
+                        const res = await fetch(url, {
+                            method,
                             headers: {
                                 'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector(
-                                    'meta[name="csrf-token"]').content,
-                                'Accept': 'application/json'
+                                'X-CSRF-TOKEN': this.csrfToken,
+                                'Accept': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest'
                             },
                             body: JSON.stringify(body)
                         });
+
+                        const data = await res.json();
+
+                        if (!res.ok) {
+                            throw new Error(data.message || 'Terjadi kesalahan pada server');
+                        }
+
                         this.fetchData(false);
                     } catch (e) {
-                        alert('Gagal melakukan aksi');
+                        console.error("Action Error:", e);
+                        this.isLoading = false;
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal',
+                            text: e.message,
+                            confirmButtonText: 'Oke',
+                            confirmButtonColor: '#dc3545',
+                            timer: 5000
+                        });
                     }
                 },
 
                 callQueue(id) {
-                    this.sendAction(`/queues/call/${id}`);
+                    const url = "{{ route('ajax.queues.call', ':ID') }}"
+                        .replace(':ID', id);
+
+                    this.sendAction(url);
+                },
+
+                directCallQueue(id) {
+                    const url = "{{ route('ajax.queues.direct-call', ':ID') }}"
+                        .replace(':ID', id);
+
+                    this.sendAction(url);
                 },
 
                 completeQueue(id) {
-                    this.sendAction(`/queues/complete/${id}`);
+                    const url = "{{ route('ajax.queues.complete', ':ID') }}"
+                        .replace(':ID', id);
+                    this.sendAction(url);
                 },
 
                 skipQueue(id) {
-                    this.sendAction(`/queues/skip/${id}`);
+                    const url = "{{ route('ajax.queues.skip', ':ID') }}"
+                        .replace(':ID', id);
+                    this.sendAction(url);
                 },
 
                 updateStatus(status) {
-                    this.sendAction(`/counters/${this.counter.id}/set-status`, 'PUT', {
-                        status: status
+                    const url = "{{ route('ajax.set-status-counter', ':ID') }}"
+                        .replace(':ID', this.counter.id);
+
+                    this.sendAction(url, 'PUT', {
+                        status
                     });
                 },
 

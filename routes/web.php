@@ -4,7 +4,6 @@ use App\Http\Controllers\AjaxController;
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\Dashboard\CounterController;
 use App\Http\Controllers\Dashboard\DashboardController;
-use App\Http\Controllers\Dashboard\QueueController;
 use App\Http\Controllers\Dashboard\ServiceController;
 use App\Http\Controllers\Dashboard\UserController;
 use App\Http\Controllers\Frontend\TouchController;
@@ -35,13 +34,30 @@ Route::group(['prefix' => 'dashboard', 'middleware' => 'auth'], function () {
     Route::put('services/{service}/toggle-status', [ServiceController::class, 'toggleStatus'])->name('services.toggle-status');
 
     Route::resource('counters', CounterController::class);
-    Route::put('counters/{counter}/set-status', [CounterController::class, 'setStatus'])->name('counters.set-status');
-
-    Route::put('queues/{queue}/call', [QueueController::class, 'callQueue'])->name('queues.call');
 });
 
 Route::group(['prefix' => 'ajax'], function () {
-    Route::get('/dashboard/staff/current-queue', [AjaxController::class, 'getCurrentQueue'])->name('ajax.dashboard.staff.current-queue');
+
+    Route::get('/dashboard/staff/current-queue', [AjaxController::class, 'getCurrentQueue'])
+        ->name('ajax.dashboard.staff.current-queue');
+
+    Route::put('/counters/{counter}/set-status', [AjaxController::class, 'setStatusCounter'])
+        ->name('ajax.set-status-counter');
+
+    Route::put('/queues/{queue}/call', [AjaxController::class, 'callQueue'])
+        ->name('ajax.queues.call');
+
+    Route::put('/queues/{queue}/direct-call', [AjaxController::class, 'directCallQueue'])
+        ->name('ajax.queues.direct-call');
+
+    Route::put('/queues/{queue}/skip', [AjaxController::class, 'skipQueue'])
+        ->name('ajax.queues.skip');
+
+    Route::put('/queues/{queue}/complete', [AjaxController::class, 'completeQueue'])
+        ->name('ajax.queues.complete');
+
+    Route::put('/services/{service}/toggle-status', [AjaxController::class, 'toggleStatusService'])
+        ->name('ajax.toggle-status-service');
 });
 
 Route::get('/touch', [TouchController::class, 'index'])->name('touch.index');
