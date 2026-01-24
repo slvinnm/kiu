@@ -13,20 +13,18 @@ class CallQueue implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public Queue $queue;
+    public Queue $queueModel;
 
     /**
      * Create a new event instance.
      */
     public function __construct(Queue $queue)
     {
-        $this->queue = $queue;
+        $this->queueModel = $queue;
     }
 
     /**
      * Get the channels the event should broadcast on.
-     *
-     * @return array<int, \Illuminate\Broadcasting\Channel>
      */
     public function broadcastOn(): array
     {

@@ -6,6 +6,7 @@ use App\Events\CallQueue;
 use App\Events\GotQueue;
 use App\Models\Counter;
 use App\Models\Queue;
+use App\Models\QueueLog;
 use App\Models\Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -23,15 +24,13 @@ class AjaxController extends Controller
 
         $counter = $user->counter;
         $service = $counter->service;
-        $today = now()->toDateString();
 
         $currentQueue = Queue::with('service')
             ->where('counter_id', $counter->id)
             ->whereIn('status', [
-                Queue::STATUS_SERVING,
                 Queue::STATUS_CALLED,
+                Queue::STATUS_SERVING,
             ])
-            ->whereDate('created_at', $today)
             ->orderBy('updated_at')
             ->first();
 
@@ -39,13 +38,11 @@ class AjaxController extends Controller
             ->where('service_id', $service->id)
             ->whereNull('counter_id')
             ->where('status', Queue::STATUS_WAITING)
-            ->whereDate('created_at', $today)
             ->orderBy('sequence')
             ->first();
 
         $waitingList = Queue::where('service_id', $service->id)
             ->where('status', Queue::STATUS_WAITING)
-            ->whereDate('created_at', $today)
             ->orderBy('sequence')
             ->limit(10)
             ->get();
@@ -55,31 +52,23 @@ class AjaxController extends Controller
                 Queue::STATUS_COMPLETED,
                 Queue::STATUS_SKIPPED,
             ])
-            ->whereDate('created_at', $today)
-            ->orderByDesc('updated_at')
+            ->orderByDesc('end_time')
             ->limit(10)
             ->get();
 
         $stats = (object) [
             'waiting' => Queue::where('service_id', $service->id)
                 ->where('status', Queue::STATUS_WAITING)
-                ->whereDate('created_at', $today)
                 ->count(),
 
             'completed' => Queue::where('counter_id', $counter->id)
                 ->where('status', Queue::STATUS_COMPLETED)
-                ->whereDate('created_at', $today)
                 ->count(),
 
             'skipped' => Queue::where('counter_id', $counter->id)
                 ->where('status', Queue::STATUS_SKIPPED)
-                ->whereDate('created_at', $today)
                 ->count(),
         ];
-
-        $serverTimeMs = $currentQueue && $currentQueue->start_time
-            ? strtotime($currentQueue->start_time) * 1000
-            : 0;
 
         return response()->json([
             'user' => $user,
@@ -90,23 +79,6 @@ class AjaxController extends Controller
             'waitingList' => $waitingList,
             'historyList' => $historyList,
             'stats' => $stats,
-            'serverTimeMs' => $serverTimeMs,
-        ], 200);
-    }
-
-    public function setStatusCounter(Request $request, Counter $counter)
-    {
-        $validated = $request->validate(
-            [
-                'status' => ['required', 'in:' . implode(',', array_keys(Counter::STATUS))],
-            ]
-        );
-
-        $counter->update($validated);
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Status loket pemanggil berhasil diubah.',
         ], 200);
     }
 
@@ -162,7 +134,11 @@ class AjaxController extends Controller
             $queue->update([
                 'counter_id' => $counter->id,
                 'status' => Queue::STATUS_CALLED,
-                'start_time' => now(),
+                'called_at' => now(),
+            ]);
+
+            $queue->logs()->create([
+                'event' => QueueLog::EVENT_CALLED,
             ]);
         });
 
@@ -175,6 +151,48 @@ class AjaxController extends Controller
         ], 200);
     }
 
+    public function startService(Queue $queue)
+    {
+        $user = Auth::user();
+
+        if (! $user->counter || $queue->counter_id !== $user->counter->id) {
+            abort(403, 'Queue tidak terkait dengan counter ini.');
+        }
+
+        if ($queue->status !== Queue::STATUS_CALLED) {
+            abort(400, 'Queue belum dipanggil.');
+        }
+
+        $queue->update([
+            'status' => Queue::STATUS_SERVING,
+            'start_time' => now(),
+        ]);
+
+        $queue->logs()->create([
+            'event' => QueueLog::EVENT_STARTED,
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Layanan untuk nomor ' . $queue->ticket_number . ' telah dimulai.',
+        ], 200);
+    }
+
+    public function setStatusCounter(Request $request, Counter $counter)
+    {
+        $validated = $request->validate(
+            [
+                'status' => ['required', 'in:' . implode(',', array_keys(Counter::STATUS))],
+            ]
+        );
+
+        $counter->update($validated);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Status loket pemanggil berhasil diubah.',
+        ], 200);
+    }
     public function completeQueue(Queue $queue)
     {
         if ($queue->status !== Queue::STATUS_SERVING) {
@@ -187,6 +205,10 @@ class AjaxController extends Controller
         $queue->update([
             'status' => Queue::STATUS_COMPLETED,
             'end_time' => now(),
+        ]);
+
+        $queue->logs()->create([
+            'event' => QueueLog::EVENT_ENDED,
         ]);
 
         broadcast(new CallQueue($queue));
@@ -231,6 +253,18 @@ class AjaxController extends Controller
             ], 400);
         }
 
+        DB::transaction(function () use ($queue, $counter) {
+            $queue->update([
+                'counter_id' => $counter->id,
+                'status' => Queue::STATUS_CALLED,
+                'start_time' => now(),
+            ]);
+
+            $queue->logs()->create([
+                'event' => QueueLog::EVENT_CALLED,
+            ]);
+        });
+
         broadcast(new CallQueue($queue));
 
         return response()->json([
@@ -250,21 +284,42 @@ class AjaxController extends Controller
         ], 200);
     }
 
-    public function getCurrentQueuesForDisplay()
+    public function displayData()
     {
+        $settings = (object) [
+            'logo' => 'https://cdn-icons-png.flaticon.com/512/3063/3063822.png',
+            'media_type' => 'image',
+            'video_url' => 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+            'slideshow_images' => [
+                'https://images.unsplash.com/photo-1589829085413-56de8ae18c73?q=80&w=2000&auto=format&fit=crop',
+                'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2000&auto=format&fit=crop',
+            ],
+            'company_name' => 'RSUD KOTA',
+            'running_text' => 'PENGUMUMAN: Harap menjaga kebersihan ruang tunggu. Dilarang merokok di area rumah sakit.',
+        ];
+
         $today = now()->toDateString();
 
-        $currentQueues = Queue::with('service')
+        $currentQueue = Queue::with(['service', 'counter'])
+            ->where('status', Queue::STATUS_SERVING)
+            ->whereDate('start_time', $today)
+            ->orderBy('start_time')
+            ->get();
+
+        $history = Queue::with(['service', 'counter'])
             ->whereIn('status', [
-                Queue::STATUS_CALLED,
-                Queue::STATUS_SERVING,
+                Queue::STATUS_COMPLETED,
+                Queue::STATUS_SKIPPED,
             ])
-            ->whereDate('created_at', $today)
-            ->orderBy('updated_at')
+            ->whereDate('end_time', $today)
+            ->orderByDesc('end_time')
+            ->limit(4)
             ->get();
 
         return response()->json([
-            'currentQueues' => $currentQueues,
+            'settings' => $settings,
+            'currentQueue' => $currentQueue,
+            'history' => $history,
         ], 200);
     }
 }

@@ -26,7 +26,7 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'role_id' => Role::ROLE_STAFF,
+            'role_id' => fake()->randomElement([Role::COUNTER, Role::ASSISTANT]),
             'counter_id' => Counter::inRandomOrder()->first()->id,
             'username' => fake()->unique()->userName(),
             'name' => fake()->name(),
@@ -42,7 +42,7 @@ class UserFactory extends Factory
      */
     public function unverified(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn(array $attributes) => [
             'email_verified_at' => null,
         ]);
     }

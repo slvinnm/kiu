@@ -141,7 +141,7 @@
             const counterContainer = document.getElementById('counter-container');
             const counterSelect = document.getElementById('counter_id');
 
-            const STAFF_ROLE_ID = @json(\App\Models\Role::ROLE_STAFF);
+            const STAFF_ROLE_ID = @json(\App\Models\Role::COUNTER);
 
             function toggleCounter() {
                 const selectedRole = document.querySelector('input[name="role_id"]:checked');

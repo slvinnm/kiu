@@ -31,6 +31,7 @@ class Queue extends Model
         'ticket_number',
         'sequence',
         'status',
+        'called_at',
         'start_time',
         'end_time',
     ];

@@ -10,9 +10,15 @@ class Role extends Model
     /** @use HasFactory<\Database\Factories\RoleFactory> */
     use HasFactory;
 
-    public const ROLE_ADMIN = 1;
+    public const ADMIN = 1;
 
-    public const ROLE_STAFF = 2;
+    public const COUNTER = 2;
+
+    public const ASSISTANT = 3;
+
+    public const DISPLAY = 4;
+
+    public const KIOSK = 5;
 
     protected $fillable = [
         'name',

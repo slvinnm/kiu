@@ -60,8 +60,8 @@ Route::group(['prefix' => 'ajax'], function () {
     Route::put('/services/{service}/toggle-status', [AjaxController::class, 'toggleStatusService'])
         ->name('ajax.toggle-status-service');
 
-    Route::get('/display/current-queues', [AjaxController::class, 'getCurrentQueuesForDisplay'])
-        ->name('ajax.display.current-queues');
+    Route::get('/display/data', [AjaxController::class, 'displayData'])
+        ->name('ajax.display.data');
 });
 
 Route::get('/touch', [TouchController::class, 'index'])->name('touch.index');

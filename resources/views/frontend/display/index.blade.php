@@ -526,7 +526,7 @@
                 'PENGUMUMAN: Harap menjaga kebersihan ruang tunggu. Dilarang merokok di area rumah sakit.',
         ];
 
-        $currentTicket = (object) [
+        $currentQueue = (object) [
             'number' => 'A-012',
             'service' => 'POLI UMUM',
             'counter' => 'LOKET 1',
@@ -588,7 +588,7 @@
 
         <div class="right-column">
             <div class="active-ticket-card">
-                @if ($currentTicket)
+                @if ($currentQueue)
                     <div class="ticket-header">
                         <div class="status-pill">
                             <span class="pulse-dot"></span>
@@ -605,12 +605,12 @@
 
                     <div class="destination-area">
                         <div class="service-name text-wrap" x-text="currentService" style="font-size: 1.2rem;">
-                            {{ $currentTicket->service }}
+                            {{ $currentQueue->service }}
                         </div>
 
                         <div class="counter-badge">
                             <i class="fas fa-map-marker-alt text-warning"></i>
-                            <span class="location-text" x-text="currentCounter">{{ $currentTicket->counter }}</span>
+                            <span class="location-text" x-text="currentCounter">{{ $currentQueue->counter }}</span>
                         </div>
                     </div>
                 @else
@@ -686,9 +686,9 @@
             Alpine.data('broadcastSystem', () => ({
                 isCalling: false,
                 showStartOverlay: true,
-                currentNumber: '{{ $currentTicket?->number }}',
-                currentService: '{{ $currentTicket?->service }}',
-                currentCounter: '{{ $currentTicket?->counter }}',
+                currentNumber: '{{ $currentQueue?->number }}',
+                currentService: '{{ $currentQueue?->service }}',
+                currentCounter: '{{ $currentQueue?->counter }}',
                 tempNumber: '',
                 tempService: '',
                 tempCounter: '',
@@ -748,7 +748,7 @@
                         hour: '2-digit',
                         minute: '2-digit',
                         hour12: false
-                    }).replace(':', '.');
+                    });
 
                     this.currentDate = now.toLocaleDateString('id-ID', {
                         weekday: 'long',

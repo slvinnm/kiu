@@ -12,9 +12,9 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
 
-        if ($user->role_id == Role::ROLE_ADMIN) {
+        if ($user->role_id == Role::ADMIN) {
             return $this->adminDashboard();
-        } elseif ($user->role_id == Role::ROLE_STAFF) {
+        } elseif ($user->role_id == Role::COUNTER) {
             return view('dashboard.staff_index');
         } else {
             abort(403, 'Unauthorized action.');

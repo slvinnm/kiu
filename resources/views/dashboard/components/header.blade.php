@@ -66,7 +66,7 @@
                         </li>
                     </ul>
                 </div>
-                @if (auth()->user()->role_id == \App\Models\Role::ROLE_ADMIN)
+                @if (auth()->user()->role_id == \App\Models\Role::ADMIN)
                     <a href="#" class="burger-btn d-block d-xl-none">
                         <i class="bi bi-justify fs-3"></i>
                     </a>
@@ -75,7 +75,7 @@
         </div>
     </div>
 
-    @if (auth()->user()->role_id == \App\Models\Role::ROLE_ADMIN)
+    @if (auth()->user()->role_id == \App\Models\Role::ADMIN)
         @include('dashboard.components.navigation')
     @endif
 
