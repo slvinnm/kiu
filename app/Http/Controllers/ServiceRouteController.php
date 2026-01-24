@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ServiceRoute;
 use App\Http\Requests\StoreServiceRouteRequest;
 use App\Http\Requests\UpdateServiceRouteRequest;
+use App\Models\ServiceRoute;
 
 class ServiceRouteController extends Controller
 {

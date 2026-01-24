@@ -38,9 +38,4 @@ class Counter extends Model
     {
         return $this->hasMany(User::class);
     }
-
-    public function queues()
-    {
-        return $this->hasMany(Queue::class);
-    }
 }

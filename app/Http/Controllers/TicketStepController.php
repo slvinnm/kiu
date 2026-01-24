@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\TicketStep;
 use App\Http\Requests\StoreTicketStepRequest;
 use App\Http\Requests\UpdateTicketStepRequest;
+use App\Models\TicketStep;
 
 class TicketStepController extends Controller
 {

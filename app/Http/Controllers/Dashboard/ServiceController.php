@@ -23,6 +23,8 @@ class ServiceController extends Controller
      */
     public function create()
     {
+        $types = Service::TYPE;
+
         return view('dashboard.service.create');
     }
 

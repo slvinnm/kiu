@@ -14,11 +14,9 @@ class Role extends Model
 
     public const COUNTER = 2;
 
-    public const ASSISTANT = 3;
+    public const SERVICE = 3;
 
-    public const DISPLAY = 4;
-
-    public const KIOSK = 5;
+    public const KIOSK = 4;
 
     protected $fillable = [
         'name',

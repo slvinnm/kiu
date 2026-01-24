@@ -18,18 +18,12 @@ class Service extends Model
         'opening_time',
         'closing_time',
         'max_queue_per_day',
-        'avg_wait_time',
         'is_active',
     ];
 
     public function counters()
     {
         return $this->hasMany(Counter::class);
-    }
-
-    public function queues()
-    {
-        return $this->hasMany(Queue::class);
     }
 
     public function scopeActive($query)

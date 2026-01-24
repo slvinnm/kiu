@@ -193,6 +193,7 @@ class AjaxController extends Controller
             'message' => 'Status loket pemanggil berhasil diubah.',
         ], 200);
     }
+
     public function completeQueue(Queue $queue)
     {
         if ($queue->status !== Queue::STATUS_SERVING) {

@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->ulid('id')->primary();
-            $table->foreignId('role_id')->nullable()->constrained('roles')->onDelete('set null');
-            $table->foreignUlid('counter_id')->nullable()->constrained('counters')->onDelete('set null');
+            $table->foreignId('role_id')->constrained('roles')->cascadeOnDelete();
+            $table->foreignUlid('counter_id')->nullable()->constrained('counters')->cascadeOnDelete();
             $table->string('name');
             $table->string('username')->unique();
             $table->string('email')->unique();

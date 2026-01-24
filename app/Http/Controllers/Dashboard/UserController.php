@@ -48,7 +48,7 @@ class UserController extends Controller
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'role_id' => ['required', 'exists:roles,id'],
-            'counter_id' => ['nullable', Rule::requiredIf(fn() => (int) $request->role_id == Role::COUNTER), 'exists:counters,id'],
+            'counter_id' => ['nullable', Rule::requiredIf(fn () => (int) $request->role_id == Role::COUNTER), 'exists:counters,id'],
         ]);
 
         if ($request->role_id == Role::ADMIN) {
@@ -92,7 +92,7 @@ class UserController extends Controller
             'email' => ['required', 'email', 'max:255', 'unique:users,email,' . $user->id],
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
             'role_id' => ['required', 'exists:roles,id'],
-            'counter_id' => ['nullable', Rule::requiredIf(fn() => (int) $request->role_id == Role::COUNTER), 'exists:counters,id'],
+            'counter_id' => ['nullable', Rule::requiredIf(fn () => (int) $request->role_id == Role::COUNTER), 'exists:counters,id'],
         ]);
 
         if ($request->role_id == Role::ADMIN) {

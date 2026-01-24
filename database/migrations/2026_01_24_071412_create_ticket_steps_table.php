@@ -23,7 +23,7 @@ return new class extends Migration
                 'serving',
                 'completed',
                 'skipped',
-                'cancelled'
+                'cancelled',
             ])->default('waiting');
             $table->timestamp('called_at')->nullable();
             $table->timestamp('start_time')->nullable();

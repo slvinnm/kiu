@@ -25,31 +25,21 @@ class UserSeeder extends Seeder
 
         User::create([
             'role_id' => Role::COUNTER,
-            'counter_id' => '01KFM0C8X2PH0G1Q9NDQ3MDG51',
-            'username' => 'counter',
-            'name' => 'Counter Member',
-            'email' => 'counter@example.com',
+            'counter_id' => '01KFQ29GGX80S41P7WDP91QNQA',
+            'username' => 'loket1',
+            'name' => 'Loket1',
+            'email' => 'loket1@example.com',
             'password' => bcrypt('password'),
             'email_verified_at' => now(),
             'remember_token' => uniqid(),
         ]);
 
         User::create([
-            'role_id' => Role::ASSISTANT,
-            'counter_id' => '01KFM0C8X2PH0G1Q9NDQ3MDG51',
-            'username' => 'asisten',
-            'name' => 'Asisten Member',
-            'email' => 'asisten@example.com',
-            'password' => bcrypt('password'),
-            'email_verified_at' => now(),
-            'remember_token' => uniqid(),
-        ]);
-
-        User::create([
-            'role_id' => Role::DISPLAY,
-            'username' => 'display',
-            'name' => 'Display Member',
-            'email' => 'display@example.com',
+            'role_id' => Role::SERVICE,
+            'counter_id' => '01KFQ29GGX80S41P7WDP91QNQA',
+            'username' => 'service1',
+            'name' => 'Service1',
+            'email' => 'service1@example.com',
             'password' => bcrypt('password'),
             'email_verified_at' => now(),
             'remember_token' => uniqid(),
@@ -58,13 +48,11 @@ class UserSeeder extends Seeder
         User::create([
             'role_id' => Role::KIOSK,
             'username' => 'kiosk',
-            'name' => 'Kiosk Member',
+            'name' => 'Kiosk',
             'email' => 'kiosk@example.com',
             'password' => bcrypt('password'),
             'email_verified_at' => now(),
             'remember_token' => uniqid(),
         ]);
-
-        User::factory()->count(50)->create();
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Service;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,6 +18,7 @@ class ServiceFactory extends Factory
     public function definition(): array
     {
         return [
+            'type' => Service::TYPE_SERVICE,
             'name' => fake()->company(),
             'code' => strtoupper(fake()->unique()->bothify('??')),
             'opening_time' => fake()->dateTimeBetween('today 06:00:00', 'today 12:00:00')->format('H:i:s'),

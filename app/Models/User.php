@@ -22,8 +22,8 @@ class User extends Authenticatable
     protected $fillable = [
         'role_id',
         'counter_id',
-        'username',
         'name',
+        'username',
         'email',
         'password',
     ];
@@ -61,14 +61,9 @@ class User extends Authenticatable
         return $this->belongsTo(Counter::class);
     }
 
-    public function queues()
-    {
-        return $this->hasMany(Queue::class);
-    }
-
     public function canAccessService($serviceId)
     {
-        if ($this->counter && $this->counter->service_id == $serviceId) {
+        if ($this->service && $this->service->id == $serviceId) {
             return true;
         }
 
