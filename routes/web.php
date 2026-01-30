@@ -4,9 +4,10 @@ use App\Http\Controllers\AjaxController;
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\CounterController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\Frontend\DisplayController;
-use App\Http\Controllers\Frontend\TouchController;
+use App\Http\Controllers\DisplayController;
 use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\ServiceRouteController;
+use App\Http\Controllers\TouchController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -32,7 +33,12 @@ Route::group(['prefix' => 'dashboard', 'middleware' => 'auth'], function () {
     Route::resource('users', UserController::class);
 
     Route::resource('services', ServiceController::class);
-    Route::put('services/{service}/toggle-status', [ServiceController::class, 'toggleStatus'])->name('services.toggle-status');
+
+    Route::put('services/{service}/toggle-status', [ServiceController::class, 'toggleStatus'])
+        ->name('services.toggle-status');
+
+    Route::resource('services.routes', ServiceRouteController::class)
+        ->only(['index', 'store', 'destroy']);
 
     Route::resource('counters', CounterController::class);
 });
@@ -65,6 +71,8 @@ Route::group(['prefix' => 'ajax'], function () {
 });
 
 Route::get('/touch', [TouchController::class, 'index'])->name('touch.index');
-Route::post('/touch/{service}/get-queue-number', [TouchController::class, 'getQueueNumber'])->name('touch.get-queue-number');
+
+Route::post('/touch/{service}/get-queue-number', [TouchController::class, 'getQueueNumber'])
+    ->name('touch.get-queue-number');
 
 Route::get('/display', [DisplayController::class, 'index'])->name('display.index');

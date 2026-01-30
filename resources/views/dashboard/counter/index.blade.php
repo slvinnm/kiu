@@ -7,30 +7,11 @@
     <link rel="stylesheet" crossorigin href="{{ asset('theme/dashboard/assets/compiled/css/table-datatable.css') }}">
 @endsection
 
-@section('page-heading')
-    <div class="page-title">
-        <div class="row">
-            <div class="col-12 col-md-6 order-md-1 order-last">
-                <h3>Pemanggil</h3>
-                <p class="text-subtitle text-muted">List data pemanggil</p>
-            </div>
-            <div class="col-12 col-md-6 order-md-2 order-first">
-                <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Pemanggil</li>
-                    </ol>
-                </nav>
-            </div>
-        </div>
-    </div>
-@endsection
-
 @section('content')
     <section class="section">
         <div class="mb-3">
             <a href="{{ route('counters.create') }}" class="btn rounded-pill btn-primary">
-                <i class="bi bi-plus-lg me-1"></i> Tambah Pemanggil
+                <i class="bi bi-plus-lg me-1"></i> Tambah Loket
             </a>
         </div>
         <div class="card">
@@ -40,10 +21,10 @@
                 </h5>
             </div>
             <div class="card-body">
-                <table class="table table-striped" id="table1">
-                    <thead>
+                <table class="table table-hover" id="table1">
+                    <thead class="table-dark">
                         <tr>
-                            <th>#</th>
+                            <th width="5%" class="text-center">#</th>
                             <th>Nama</th>
                             <th>Status</th>
                             <th>Operator</th>
@@ -53,24 +34,24 @@
                     <tbody>
                         @foreach ($counters as $counter)
                             <tr>
-                                <td>{{ $loop->iteration }}</td>
+                                <td class="text-center">{{ $loop->iteration }}</td>
                                 <td>{{ $counter->name }}</td>
                                 <td>
                                     @if ($counter->status == 'open')
                                         <span
-                                            class="badge bg-light-success text-success border border-success px-3 py-2 rounded-pill shadow-sm"
+                                            class="badge bg-light-success text-success border border-success px-3 py-2 rounded-pill"
                                             style="font-weight: 600;">
                                             <i class="bi bi-circle-fill me-1 small"></i> Buka
                                         </span>
                                     @elseif($counter->status == 'break')
                                         <span
-                                            class="badge bg-light-warning text-warning border border-warning px-3 py-2 rounded-pill shadow-sm"
+                                            class="badge bg-light-warning text-warning border border-warning px-3 py-2 rounded-pill"
                                             style="font-weight: 600;">
                                             <i class="bi bi-clock-history me-1 small"></i> Istirahat
                                         </span>
                                     @else
                                         <span
-                                            class="badge bg-light-danger text-danger border border-danger px-3 py-2 rounded-pill shadow-sm"
+                                            class="badge bg-light-danger text-danger border border-danger px-3 py-2 rounded-pill"
                                             style="font-weight: 600;">
                                             <i class="bi bi-x-circle-fill me-1 small"></i> Tutup
                                         </span>

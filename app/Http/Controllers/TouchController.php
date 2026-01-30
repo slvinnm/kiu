@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\Frontend;
+namespace App\Http\Controllers;
 
 use App\Events\GotQueue;
-use App\Http\Controllers\Controller;
 use App\Models\Queue;
 use App\Models\QueueLog;
 use App\Models\Service;

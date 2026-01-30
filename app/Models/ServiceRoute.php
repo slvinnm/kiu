@@ -16,4 +16,14 @@ class ServiceRoute extends Model
         'to_service_id',
         'step_order',
     ];
+
+    public function fromService()
+    {
+        return $this->belongsTo(Service::class, 'from_service_id');
+    }
+
+    public function toService()
+    {
+        return $this->belongsTo(Service::class, 'to_service_id');
+    }
 }

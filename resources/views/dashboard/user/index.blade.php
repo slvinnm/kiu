@@ -7,25 +7,6 @@
     <link rel="stylesheet" crossorigin href="{{ asset('theme/dashboard/assets/compiled/css/table-datatable.css') }}">
 @endsection
 
-@section('page-heading')
-    <div class="page-title">
-        <div class="row">
-            <div class="col-12 col-md-6 order-md-1 order-last">
-                <h3>Pengguna</h3>
-                <p class="text-subtitle text-muted">List data pengguna</p>
-            </div>
-            <div class="col-12 col-md-6 order-md-2 order-first">
-                <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Pengguna</li>
-                    </ol>
-                </nav>
-            </div>
-        </div>
-    </div>
-@endsection
-
 @section('content')
     <section class="section">
         <div class="mb-3">
@@ -40,8 +21,8 @@
                 </h5>
             </div>
             <div class="card-body">
-                <table class="table table-striped" id="table1">
-                    <thead>
+                <table class="table table-hover" id="table1">
+                    <thead class="table-dark">
                         <tr>
                             <th>Nama</th>
                             <th>Email</th>

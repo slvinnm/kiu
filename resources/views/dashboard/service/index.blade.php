@@ -7,25 +7,6 @@
     <link rel="stylesheet" crossorigin href="{{ asset('theme/dashboard/assets/compiled/css/table-datatable.css') }}">
 @endsection
 
-@section('page-heading')
-    <div class="page-title">
-        <div class="row">
-            <div class="col-12 col-md-6 order-md-1 order-last">
-                <h3>Layanan</h3>
-                <p class="text-subtitle text-muted">List data layanan</p>
-            </div>
-            <div class="col-12 col-md-6 order-md-2 order-first">
-                <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Layanan</li>
-                    </ol>
-                </nav>
-            </div>
-        </div>
-    </div>
-@endsection
-
 @section('content')
     <section class="section">
         <div class="mb-3">
@@ -40,21 +21,21 @@
                 </h5>
             </div>
             <div class="card-body">
-                <table class="table table-striped" id="table1">
-                    <thead>
+                <table class="table table-hover" id="table1">
+                    <thead class="table-dark">
                         <tr>
-                            <th>#</th>
+                            <th width="5%" class="text-center">#</th>
                             <th>Nama</th>
                             <th>Kode</th>
                             <th>Status</th>
-                            <th>Penanggung Jawab</th>
-                            <th>Aksi</th>
+                            <th>Operator</th>
+                            <th class="text-center">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($services as $service)
                             <tr>
-                                <td>{{ $loop->iteration }}</td>
+                                <td class="text-center">{{ $loop->iteration }}</td>
                                 <td>{{ $service->name }}</td>
                                 <td>{{ $service->code }}</td>
                                 <td>
@@ -74,8 +55,12 @@
                                     </form>
                                 </td>
                                 <td>{{ $service->operator->name }}</td>
-                                <td>
-                                    <div class="d-flex gap-2 mb-2">
+                                <td >
+                                    <div class="d-flex gap-2 mb-2 justify-content-center">
+                                        <a href="{{ route('services.routes.index', $service) }}"
+                                            class="btn rounded-pill btn-sm btn-secondary">
+                                            <i class="bi bi-signpost-split me-1"></i> Rute Layanan
+                                        </a>
                                         <a href="{{ route('services.edit', $service) }}"
                                             class="btn rounded-pill btn-sm btn-primary">
                                             <i class="bi bi-pencil-square me-1"></i> Edit

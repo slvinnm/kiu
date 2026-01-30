@@ -26,6 +26,25 @@ class Service extends Model
         return $this->hasOne(User::class);
     }
 
+    public function routesFrom()
+    {
+        return $this->hasMany(ServiceRoute::class, 'from_service_id');
+    }
+
+    public function routesTo()
+    {
+        return $this->hasMany(ServiceRoute::class, 'to_service_id');
+    }
+
+    public function reorderRoutesFrom()
+    {
+        $routes = $this->routesFrom()->orderBy('step_order')->get();
+        foreach ($routes as $index => $route) {
+            $route->step_order = $index + 1;
+            $route->save();
+        }
+    }
+
     public function scopeActive($query)
     {
         return $query->where('is_active', true);

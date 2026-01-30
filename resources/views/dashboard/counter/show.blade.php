@@ -5,7 +5,7 @@
 @section('content')
     <section class="section">
         <div class="mb-4 d-flex justify-content-between align-items-center">
-            <a href="{{ route('counters.index') }}" class="btn rounded-pill btn-outline-secondary">
+            <a href="{{ route('counters.index') }}" class="btn rounded-pill btn-warning">
                 <i class="bi bi-chevron-left me-1"></i> Kembali
             </a>
             <a href="{{ route('counters.edit', $counter->id) }}" class="btn rounded-pill btn-primary shadow-sm px-4">

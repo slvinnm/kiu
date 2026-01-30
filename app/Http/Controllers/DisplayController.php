@@ -1,8 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Frontend;
-
-use App\Http\Controllers\Controller;
+namespace App\Http\Controllers;
 
 class DisplayController extends Controller
 {
