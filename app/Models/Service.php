@@ -21,9 +21,9 @@ class Service extends Model
         'is_active',
     ];
 
-    public function counters()
+    public function operator()
     {
-        return $this->hasMany(Counter::class);
+        return $this->hasOne(User::class);
     }
 
     public function scopeActive($query)

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->ulid('id')->primary();
             $table->foreignId('role_id')->constrained('roles')->cascadeOnDelete();
             $table->foreignUlid('counter_id')->nullable()->constrained('counters')->cascadeOnDelete();
+            $table->foreignUlid('service_id')->nullable()->constrained('services')->cascadeOnDelete();
             $table->string('name');
             $table->string('username')->unique();
             $table->string('email')->unique();

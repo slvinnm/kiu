@@ -1,22 +1,13 @@
 @extends('dashboard.layouts.main')
 
-@section('title', 'Edit Layanan')
+@section('title', 'Edit Layanan & Operator')
 
 @section('page-heading')
     <div class="page-title">
         <div class="row">
             <div class="col-12 col-md-6 order-md-1 order-last">
                 <h3>Edit Layanan</h3>
-                <p class="text-subtitle text-muted">Form edit data layanan baru</p>
-            </div>
-            <div class="col-12 col-md-6 order-md-2 order-first">
-                <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('services.index') }}">Layanan</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Edit Layanan</li>
-                    </ol>
-                </nav>
+                <p class="text-subtitle text-muted">Ubah data layanan dan akun operator</p>
             </div>
         </div>
     </div>
@@ -30,14 +21,15 @@
             </a>
         </div>
 
-        <form action="{{ route('services.update', $service) }}" method="POST">
-            @method('PUT')
+        <form action="{{ route('services.update', $service->id) }}" method="POST">
             @csrf
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title">Data Layanan</h5>
+            @method('PUT')
+
+            <div class="card shadow-sm">
+                <div class="card-header bg-light-primary">
+                    <h5 class="card-title">1. Data Layanan</h5>
                 </div>
-                <div class="card-body">
+                <div class="card-body mt-3">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group mb-3">
@@ -63,9 +55,54 @@
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-header bg-light-primary">
+                    <h5 class="card-title">2. Operator</h5>
+                </div>
+                <div class="card-body mt-3">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group mb-3">
+                                <label for="username" class="form-label">Username</label>
+                                <input type="text" class="form-control @error('username') is-invalid @enderror"
+                                    id="username" name="username"
+                                    value="{{ old('username', $service->operator->name ?? '') }}"
+                                    placeholder="Nama Operator">
+                                @error('username')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control @error('email') is-invalid @enderror"
+                                    id="email" name="email"
+                                    value="{{ old('email', $service->operator->email ?? '') }}"
+                                    placeholder="email@example.com">
+                                @error('email')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group mb-3">
+                                <label for="password" class="form-label">Password</label>
+                                <input type="password" class="form-control @error('password') is-invalid @enderror"
+                                    id="password" name="password" placeholder="Kosongkan jika tidak ingin ganti">
+                                <small class="text-muted">Biarkan kosong jika tidak ingin mengubah password.</small>
+                                @error('password')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="card-footer text-end">
                     <button type="submit" class="btn rounded-pill btn-primary">
-                        <i class="bi bi-save me-1"></i> Simpan Layanan
+                        <i class="bi bi-save me-1"></i> Perbarui Data
                     </button>
                 </div>
             </div>

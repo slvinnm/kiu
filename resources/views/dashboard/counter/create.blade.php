@@ -7,16 +7,7 @@
         <div class="row">
             <div class="col-12 col-md-6 order-md-1 order-last">
                 <h3>Tambah Pemanggil</h3>
-                <p class="text-subtitle text-muted">Form tambah data pemanggil (Loket)</p>
-            </div>
-            <div class="col-12 col-md-6 order-md-2 order-first">
-                <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('counters.index') }}">Pemanggil</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Tambah Pemanggil</li>
-                    </ol>
-                </nav>
+                <p class="text-subtitle text-muted">Form tambah data loket dan akun operator</p>
             </div>
         </div>
     </div>
@@ -32,53 +23,62 @@
 
         <form action="{{ route('counters.store') }}" method="POST">
             @csrf
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title">Data Pemanggil</h5>
+
+            <div class="card shadow-sm">
+                <div class="card-header bg-light-primary">
+                    <h5 class="card-title">1. Data Loket</h5>
                 </div>
-                <div class="card-body">
+                <div class="card-body mt-3">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-12">
                             <div class="form-group mb-3">
                                 <label for="name" class="form-label">Nama Pemanggil / Loket</label>
                                 <input type="text" class="form-control @error('name') is-invalid @enderror"
-                                    id="name" name="name" value="{{ old('name') }}" placeholder="Contoh: Loket 1">
+                                    id="name" name="name" value="{{ old('name') }}"
+                                    placeholder="Contoh: Loket 1 atau Customer Service A">
                                 @error('name')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
+            <div class="card shadow-sm">
+                <div class="card-header bg-light-primary">
+                    <h5 class="card-title">2. Operator</h5>
+                </div>
+                <div class="card-body mt-3">
+                    <div class="row">
+                        <div class="col-md-4">
                             <div class="form-group mb-3">
-                                <label for="service_id" class="form-label">Layanan</label>
-                                <select class="form-select @error('service_id') is-invalid @enderror" id="service_id"
-                                    name="service_id">
-                                    <option value="" selected disabled>-- Pilih Layanan --</option>
-                                    @foreach ($services as $service)
-                                        <option value="{{ $service->id }}"
-                                            {{ old('service_id') == $service->id ? 'selected' : '' }}>
-                                            {{ $service->name }} ({{ $service->code }})
-                                        </option>
-                                    @endforeach
-                                </select>
-                                @error('service_id')
+                                <label for="user_name" class="form-label">Nama Operator</label>
+                                <input type="text" class="form-control @error('user_name') is-invalid @enderror"
+                                    id="user_name" name="user_name" value="{{ old('user_name') }}"
+                                    placeholder="Nama Lengkap">
+                                @error('user_name')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
                         </div>
-
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group mb-3">
-                                <label for="status" class="form-label">Status Awal</label>
-                                <select class="form-select @error('status') is-invalid @enderror" id="status"
-                                    name="status">
-                                    @foreach ($counter_status as $status => $label)
-                                        <option value="{{ $status }}"
-                                            {{ old('status') == $status ? 'selected' : '' }}>
-                                            {{ Str::ucfirst($label) }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                                @error('status')
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control @error('email') is-invalid @enderror"
+                                    id="email" name="email" value="{{ old('email') }}"
+                                    placeholder="email@example.com">
+                                @error('email')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group mb-3">
+                                <label for="password" class="form-label">Password</label>
+                                <input type="password" class="form-control @error('password') is-invalid @enderror"
+                                    id="password" name="password" placeholder="Minimal 8 karakter">
+                                @error('password')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -87,7 +87,7 @@
                 </div>
                 <div class="card-footer text-end">
                     <button type="submit" class="btn rounded-pill btn-primary">
-                        <i class="bi bi-save me-1"></i> Simpan Pemanggil
+                        <i class="bi bi-save me-1"></i> Simpan Pemanggil & Akun
                     </button>
                 </div>
             </div>

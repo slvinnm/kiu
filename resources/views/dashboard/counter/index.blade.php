@@ -43,32 +43,40 @@
                 <table class="table table-striped" id="table1">
                     <thead>
                         <tr>
-                            <th>Layanan</th>
+                            <th>#</th>
                             <th>Nama</th>
                             <th>Status</th>
+                            <th>Operator</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($counters as $counter)
                             <tr>
-                                <td>{{ $counter->service->name }}</td>
+                                <td>{{ $loop->iteration }}</td>
                                 <td>{{ $counter->name }}</td>
                                 <td>
                                     @if ($counter->status == 'open')
-                                        <span class="badge bg-success fs-6">
-                                            <i class="bi bi-door-open me-1"></i> Open (Buka)
+                                        <span
+                                            class="badge bg-light-success text-success border border-success px-3 py-2 rounded-pill shadow-sm"
+                                            style="font-weight: 600;">
+                                            <i class="bi bi-circle-fill me-1 small"></i> Buka
                                         </span>
                                     @elseif($counter->status == 'break')
-                                        <span class="badge bg-warning text-dark fs-6">
-                                            <i class="bi bi-pause-circle me-1"></i> Break (Istirahat)
+                                        <span
+                                            class="badge bg-light-warning text-warning border border-warning px-3 py-2 rounded-pill shadow-sm"
+                                            style="font-weight: 600;">
+                                            <i class="bi bi-clock-history me-1 small"></i> Istirahat
                                         </span>
                                     @else
-                                        <span class="badge bg-danger fs-6">
-                                            <i class="bi bi-door-closed me-1"></i> Closed (Tutup)
+                                        <span
+                                            class="badge bg-light-danger text-danger border border-danger px-3 py-2 rounded-pill shadow-sm"
+                                            style="font-weight: 600;">
+                                            <i class="bi bi-x-circle-fill me-1 small"></i> Tutup
                                         </span>
                                     @endif
                                 </td>
+                                <td>{{ $counter->operator->name }}</td>
                                 <td>
                                     <a href="{{ route('counters.edit', $counter) }}"
                                         class="btn rounded-pill btn-sm btn-primary">

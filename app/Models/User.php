@@ -22,6 +22,7 @@ class User extends Authenticatable
     protected $fillable = [
         'role_id',
         'counter_id',
+        'service_id',
         'name',
         'username',
         'email',
@@ -59,6 +60,11 @@ class User extends Authenticatable
     public function counter()
     {
         return $this->belongsTo(Counter::class);
+    }
+
+    public function service()
+    {
+        return $this->belongsTo(Service::class);
     }
 
     public function canAccessService($serviceId)

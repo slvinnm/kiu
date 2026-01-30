@@ -43,15 +43,18 @@
                 <table class="table table-striped" id="table1">
                     <thead>
                         <tr>
+                            <th>#</th>
                             <th>Nama</th>
                             <th>Kode</th>
                             <th>Status</th>
+                            <th>Penanggung Jawab</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($services as $service)
                             <tr>
+                                <td>{{ $loop->iteration }}</td>
                                 <td>{{ $service->name }}</td>
                                 <td>{{ $service->code }}</td>
                                 <td>
@@ -70,26 +73,27 @@
                                         </div>
                                     </form>
                                 </td>
+                                <td>{{ $service->operator->name }}</td>
                                 <td>
-                                    <a href="{{ route('services.edit', $service) }}"
-                                        class="btn rounded-pill btn-sm btn-primary">
-                                        <i class="bi bi-pencil-square me-1"></i> Edit
-                                    </a>
-
-                                    <a href="{{ route('services.show', $service) }}"
-                                        class="btn rounded-pill btn-sm btn-info">
-                                        <i class="bi bi-eye me-1"></i> Detail
-                                    </a>
-
-                                    <form action="{{ route('services.destroy', $service) }}" method="POST"
-                                        class="d-inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn rounded-pill btn-sm btn-danger"
-                                            onclick="return confirm('Yakin ingin menghapus pengguna ini?')">
-                                            <i class="bi bi-trash me-1"></i> Hapus
-                                        </button>
-                                    </form>
+                                    <div class="d-flex gap-2 mb-2">
+                                        <a href="{{ route('services.edit', $service) }}"
+                                            class="btn rounded-pill btn-sm btn-primary">
+                                            <i class="bi bi-pencil-square me-1"></i> Edit
+                                        </a>
+                                        <a href="{{ route('services.show', $service) }}"
+                                            class="btn rounded-pill btn-sm btn-info">
+                                            <i class="bi bi-eye me-1"></i> Detail
+                                        </a>
+                                        <form action="{{ route('services.destroy', $service) }}" method="POST"
+                                            class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn rounded-pill btn-sm btn-danger"
+                                                onclick="return confirm('Yakin ingin menghapus pengguna ini?')">
+                                                <i class="bi bi-trash me-1"></i> Hapus
+                                            </button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                         @endforeach

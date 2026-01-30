@@ -1,22 +1,13 @@
 @extends('dashboard.layouts.main')
 
-@section('title', 'Tambah Layanan')
+@section('title', 'Tambah Layanan & Operator')
 
 @section('page-heading')
     <div class="page-title">
         <div class="row">
             <div class="col-12 col-md-6 order-md-1 order-last">
                 <h3>Tambah Layanan</h3>
-                <p class="text-subtitle text-muted">Form tambah data layanan baru</p>
-            </div>
-            <div class="col-12 col-md-6 order-md-2 order-first">
-                <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('services.index') }}">Layanan</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Tambah Layanan</li>
-                    </ol>
-                </nav>
+                <p class="text-subtitle text-muted">Form tambah layanan dan operator</p>
             </div>
         </div>
     </div>
@@ -30,13 +21,14 @@
             </a>
         </div>
 
-        <form action="{{ route('services.store') }}" method="POST">
+        <form action="{{ route('services.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title">Data Layanan</h5>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light-primary">
+                    <h5 class="card-title">1. Data Layanan</h5>
                 </div>
-                <div class="card-body">
+                <div class="card-body mt-3">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group mb-3">
@@ -59,11 +51,98 @@
                                 @enderror
                             </div>
                         </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group mb-3">
+                                <label for="opening_time" class="form-label">Jam Buka</label>
+                                <input type="time" class="form-control @error('opening_time') is-invalid @enderror"
+                                    id="opening_time" name="opening_time" value="{{ old('opening_time') }}">
+                                @error('opening_time')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group mb-3">
+                                <label for="closing_time" class="form-label">Jam Tutup</label>
+                                <input type="time" class="form-control @error('closing_time') is-invalid @enderror"
+                                    id="closing_time" name="closing_time" value="{{ old('closing_time') }}">
+                                @error('closing_time')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group mb-3">
+                                <label for="max_queue_per_day" class="form-label">Maks. Antrean / Hari</label>
+                                <input type="number" class="form-control @error('max_queue_per_day') is-invalid @enderror"
+                                    id="max_queue_per_day" name="max_queue_per_day" value="{{ old('max_queue_per_day') }}"
+                                    placeholder="Contoh: 100">
+                                @error('max_queue_per_day')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-group mb-3">
+                                <label for="icon" class="form-label">Ikon Layanan (Gambar)</label>
+                                <input type="file" class="form-control @error('icon') is-invalid @enderror"
+                                    id="icon" name="icon" accept="image/*">
+                                <small class="text-muted">Format: JPG, PNG, WEBP. Maks: 2MB</small>
+                                @error('icon')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-header bg-light-primary">
+                    <h5 class="card-title">2. Operator</h5>
+                </div>
+                <div class="card-body mt-3">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group mb-3">
+                                <label for="username" class="form-label">Username</label>
+                                <input type="text" class="form-control @error('username') is-invalid @enderror"
+                                    id="username" name="username" value="{{ old('username') }}"
+                                    placeholder="Nama Operator">
+                                @error('username')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control @error('email') is-invalid @enderror"
+                                    id="email" name="email" value="{{ old('email') }}"
+                                    placeholder="email@example.com">
+                                @error('email')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group mb-3">
+                                <label for="password" class="form-label">Password</label>
+                                <input type="password" class="form-control @error('password') is-invalid @enderror"
+                                    id="password" name="password" placeholder="Minimal 8 karakter">
+                                @error('password')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="card-footer text-end">
                     <button type="submit" class="btn rounded-pill btn-primary">
-                        <i class="bi bi-save me-1"></i> Simpan Layanan
+                        <i class="bi bi-save me-1"></i> Simpan Data Lengkap
                     </button>
                 </div>
             </div>

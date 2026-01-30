@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Http\Controllers\Dashboard;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\Counter;
 use App\Models\Role;
 use App\Models\User;

@@ -8,17 +8,22 @@
             </li>
             <li class="menu-item {{ request()->routeIs('services*') ? 'active' : '' }} ">
                 <a href="{{ route('services.index') }}" class='menu-link'>
-                    <span><i class="bi bi-gear-fill"></i> Layanan</span>
+                    <span><i class="bi bi-stack"></i> Layanan</span>
                 </a>
             </li>
             <li class="menu-item {{ request()->routeIs('counters*') ? 'active' : '' }} ">
                 <a href="{{ route('counters.index') }}" class='menu-link'>
-                    <span><i class="bi bi-gear-fill"></i> Loket / Pemanggil</span>
+                    <span><i class="bi bi-display-fill"></i> Loket</span>
                 </a>
             </li>
-            <li class="menu-item {{ request()->routeIs('users*') ? 'active' : '' }} ">
-                <a href="{{ route('users.index') }}" class='menu-link'>
-                    <span><i class="bi bi-person-fill"></i> Pengguna</span>
+            <li class="menu-item ">
+                <a href="#" class='menu-link'>
+                    <span><i class="bi bi-sliders"></i> Pengaturan 1</span>
+                </a>
+            </li>
+            <li class="menu-item ">
+                <a href="#" class='menu-link'>
+                    <span><i class="bi bi-gear-fill"></i> Pengaturan 2</span>
                 </a>
             </li>
         </ul>
