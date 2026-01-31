@@ -77,7 +77,6 @@ Route::group(['prefix' => 'ajax'], function () {
         ->name('ajax.display.data');
 });
 
-
 Route::get('/touch', [TouchController::class, 'index'])->name('touch.index');
 
 Route::get('/csrf-refresh', function () {
