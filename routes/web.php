@@ -28,7 +28,8 @@ Route::post('/logout', [AuthenticationController::class, 'logout'])
     ->name('logout');
 
 Route::group(['prefix' => 'dashboard', 'middleware' => 'auth'], function () {
-    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/', [DashboardController::class, 'index'])
+        ->name('dashboard');
 
     Route::resource('users', UserController::class);
 
