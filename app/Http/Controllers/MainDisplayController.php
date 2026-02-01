@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-class DisplayController extends Controller
+class MainDisplayController extends Controller
 {
     public function index()
     {

@@ -3,7 +3,7 @@
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\CounterController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\DisplayController;
+use App\Http\Controllers\MainDisplayController;
 use App\Http\Controllers\FetchController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\ServiceRouteController;
@@ -47,7 +47,7 @@ Route::group(['prefix' => 'dashboard', 'middleware' => 'auth'], function () {
 Route::get('/touch', [TouchController::class, 'index'])
     ->name('touch.index');
 
-Route::get('/display', [DisplayController::class, 'index'])
+Route::get('/display', [MainDisplayController::class, 'index'])
     ->name('display.index');
 
 Route::group(['prefix' => 'fetch'], function () {

@@ -437,7 +437,7 @@
 
                     this.fetchServices();
 
-                    Echo.channel('public-channel')
+                    Echo.channel('touch')
                         .listen('.QueueUpdated', (e) => {
                             console.log('WebSocket Event Received:', e);
                             this.refreshData();

@@ -10,6 +10,10 @@ Broadcast::channel('service.{serviceId}', function ($user, $serviceId) {
     return $user->canAccessService($serviceId);
 });
 
-Broadcast::channel('public-channel', function () {
+Broadcast::channel('touch', function () {
+    return true;
+});
+
+Broadcast::channel('main-display', function () {
     return true;
 });
