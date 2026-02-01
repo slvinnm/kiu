@@ -4,6 +4,7 @@
 
 @section('css')
     <style>
+        /* 1. VARIABLES & BASE STYLES */
         :root {
             --bg-dark: #020617;
             --panel-bg: #0f172a;
@@ -23,14 +24,33 @@
             margin: 0;
         }
 
+        /* 2. GLOBAL LAYOUT (GRID & COLUMNS) */
         .broadcast-grid {
             display: grid;
             grid-template-columns: 1fr 550px;
             grid-template-rows: 90px 1fr;
             height: 100vh;
-            width: 100vw;
         }
 
+        .left-column {
+            grid-row: 2 / 3;
+            grid-column: 1 / 2;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .right-column {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            height: calc(100vh - 90px);
+            overflow: hidden;
+        }
+
+        /* 3. HEADER SECTION & BRANDING */
         .header-section {
             grid-column: 1 / -1;
             background: var(--panel-bg);
@@ -63,6 +83,7 @@
             color: white;
         }
 
+        /* --- Clock & Date --- */
         .clock-wrapper {
             text-align: right;
             line-height: 1;
@@ -83,39 +104,7 @@
             margin-top: 4px;
         }
 
-        .status-text {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.9rem;
-            color: #64748b;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 800;
-            background: #f1f5f9;
-            padding: 8px 20px;
-            border-radius: 50px;
-        }
-
-        .pulse-dot {
-            width: 10px;
-            height: 10px;
-            background: #22c55e;
-            border-radius: 50%;
-            animation: pulse 1.5s infinite;
-        }
-
-        .left-column {
-            grid-row: 2 / 3;
-            grid-column: 1 / 2;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-        }
-
+        /* 4. MEDIA & TICKER COMPONENTS (LEFT COLUMN) */
         .media-card {
             background: #000;
             border-radius: 24px;
@@ -141,6 +130,7 @@
             object-fit: cover;
         }
 
+        /* --- Footer Ticker --- */
         .card-footer-ticker {
             height: 60px;
             background: var(--panel-bg);
@@ -168,40 +158,28 @@
             letter-spacing: 0.5px;
         }
 
-        .right-column {
-            grid-row: 2 / 3;
-            grid-column: 2 / 3;
-            background: var(--panel-bg);
-            border-left: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
-            gap: 20px;
-        }
-
+        /* 5. TICKET & HISTORY COMPONENTS (RIGHT COLUMN) */
         .active-ticket-card {
             background: var(--accent-gradient);
             border-radius: 20px;
-            padding: 0;
-            text-align: center;
-            flex-grow: 1;
+            min-height: 320px;
+            flex: 0 0 auto;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            overflow: visible;
-            box-shadow: 0 20px 40px -10px rgba(59, 130, 246, 0.6);
             position: relative;
-            mask-image: radial-gradient(circle at 0% 65%, transparent 20px, black 21px),
-                radial-gradient(circle at 100% 65%, transparent 20px, black 21px);
-            mask-composite: intersect;
-            -webkit-mask-image: radial-gradient(circle at 0 65%, transparent 15px, black 16px),
-                radial-gradient(circle at 100% 65%, transparent 15px, black 16px);
+            box-shadow: 0 20px 40px -10px rgba(59, 130, 246, 0.6);
+
+            -webkit-mask-image: radial-gradient(circle at 0 70%, transparent 15px, black 16px),
+                radial-gradient(circle at 100% 70%, transparent 15px, black 16px);
+            mask-image: radial-gradient(circle at 0 70%, transparent 15px, black 16px),
+                radial-gradient(circle at 100% 70%, transparent 15px, black 16px);
             -webkit-mask-composite: source-in;
+            mask-composite: intersect;
         }
 
         .ticket-header {
-            padding: 30px 20px 40px 20px;
-            flex-grow: 1;
+            height: 70%;
+            padding: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -237,18 +215,21 @@
             font-weight: 700;
             line-height: 1;
             color: #fff;
-            word-break: break-word;
+            font-size: clamp(3rem, 8vh, 6rem);
+            margin-top: 10px;
             text-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
 
         .destination-area {
+            height: 30%;
             background: rgba(0, 0, 0, 0.15);
-            padding: 35px 20px 25px 20px;
+            padding: 10px 20px;
             width: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 15px;
+            justify-content: center;
+            gap: 5px;
             position: relative;
         }
 
@@ -258,8 +239,7 @@
             top: 0;
             left: 20px;
             right: 20px;
-            height: 0;
-            border-top: 3px dashed rgba(255, 255, 255, 0.4);
+            border-top: 2px dashed rgba(255, 255, 255, 0.3);
         }
 
         .service-name {
@@ -275,31 +255,71 @@
         .counter-badge {
             background: #fff;
             color: var(--accent);
-            font-size: 1.8rem;
+            font-size: clamp(1rem, 2.5vh, 1.8rem);
             font-weight: 800;
-            padding: 12px 30px;
-            border-radius: 16px;
+            padding: 8px 20px;
+            border-radius: 12px;
             display: inline-flex;
             align-items: center;
-            justify-content: center;
-            gap: 12px;
+            gap: 10px;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-            width: 100%;
-            max-width: 90%;
         }
 
-        .location-text {
+        .counter-text {
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
+        /* --- Idle/Empty State --- */
+        .empty-ticket-content {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            width: 100%;
+        }
+
+        .empty-ticket-main {
+            height: 70%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .empty-ticket-icon {
+            font-size: 4.5rem;
+            color: rgba(255, 255, 255, 0.25);
+            animation: pulseIcon 3s infinite ease-in-out;
+        }
+
+        .empty-ticket-footer {
+            height: 30%;
+            background: rgba(0, 0, 0, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .empty-ticket-footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 20px;
+            right: 20px;
+            border-top: 2px dashed rgba(255, 255, 255, 0.15);
+        }
+
+        /* --- History List & Sidebar Elements --- */
         .history-ticket-card {
             background: rgba(255, 255, 255, 0.03);
             border-radius: 16px;
-            padding: 20px;
-            flex-shrink: 0;
+            padding: 15px;
             border: 1px solid rgba(255, 255, 255, 0.05);
+            min-height: 0;
+            flex: 1;
         }
 
         .history-header {
@@ -318,8 +338,10 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 10px 12px;
+            margin-bottom: 8px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 8px;
         }
 
         .history-item:last-child {
@@ -351,6 +373,16 @@
             font-size: 1rem;
         }
 
+        .empty-history {
+            border-top: none;
+            opacity: 0.5;
+            padding: 20px 0;
+            text-align: center;
+            color: var(--text-dim);
+            font-style: italic;
+            font-size: 0.9rem;
+        }
+
         .flash-overlay {
             position: fixed;
             inset: 0;
@@ -365,6 +397,7 @@
             animation: flashBg 0.5s infinite alternate;
         }
 
+        /* --- Start/Intro Overlay --- */
         .start-overlay {
             position: fixed;
             top: 0;
@@ -418,6 +451,78 @@
             transform: scale(1.05);
         }
 
+        .pulse-dot {
+            width: 10px;
+            height: 10px;
+            background: #22c55e;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+
+        .overflow-auto::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .overflow-auto::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .overflow-auto::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        /* 7. KEYFRAMES & TRANSITIONS */
+        @keyframes pulse {
+
+            0%,
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.2);
+                opacity: 0.7;
+            }
+        }
+
+        @keyframes pulseIcon {
+
+            0%,
+
+            100% {
+                transform: scale(1);
+                opacity: 0.3;
+            }
+
+            50% {
+                transform: scale(1.1);
+                opacity: 0.6;
+            }
+        }
+
+        @keyframes flashBg {
+            from {
+                background: #3b82f6;
+            }
+
+            to {
+                background: #1d4ed8;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
         .fade-enter-active,
         .fade-leave-active {
             transition: opacity 0.3s ease, transform 0.3s ease;
@@ -434,118 +539,16 @@
             opacity: 1;
             transform: scale(1);
         }
-
-        /* Add inside your <style> tag */
-
-        /* Style for when there is no active ticket (Waiting Mode) */
-        .idle-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
-            color: rgba(255, 255, 255, 0.5);
-            text-align: center;
-            animation: fadeIn 0.5s ease-in;
-        }
-
-        .idle-icon {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-            color: rgba(255, 255, 255, 0.3);
-        }
-
-        .idle-text {
-            font-size: 1.5rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        /* Style for Empty History */
-        .empty-history {
-            padding: 30px;
-            text-align: center;
-            color: var(--text-dim);
-            font-style: italic;
-            font-size: 0.9rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
-        }
-
-        @keyframes pulseIcon {
-            0% {
-                transform: scale(1);
-                opacity: 0.3;
-            }
-
-            50% {
-                transform: scale(1.1);
-                opacity: 0.6;
-            }
-
-            100% {
-                transform: scale(1);
-                opacity: 0.3;
-            }
-        }
-
-        @keyframes flashBg {
-            from {
-                background: #3b82f6;
-            }
-
-            to {
-                background: #1d4ed8;
-            }
-        }
     </style>
 @endsection
 
 @section('content')
-    @php
-        $settings = (object) [
-            'logo' => 'https://cdn-icons-png.flaticon.com/512/3063/3063822.png',
-            'media_type' => 'image',
-            'video_url' => 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-            'slideshow_images' => [
-                'https://images.unsplash.com/photo-1589829085413-56de8ae18c73?q=80&w=2000&auto=format&fit=crop',
-                'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2000&auto=format&fit=crop',
-            ],
-            'company_name' => 'RSUD KOTA',
-            'running_text' =>
-                'PENGUMUMAN: Harap menjaga kebersihan ruang tunggu. Dilarang merokok di area rumah sakit.',
-        ];
-
-        $currentQueue = (object) [
-            'number' => 'A-012',
-            'service' => 'POLI UMUM',
-            'counter' => 'LOKET 1',
-        ];
-
-        $history = collect([
-            (object) ['number' => 'B-005', 'service' => 'FARMASI', 'counter' => 'LOKET 2'],
-            (object) ['number' => 'A-011', 'service' => 'POLI UMUM', 'counter' => 'LOKET 1'],
-            (object) ['number' => 'C-003', 'service' => 'ADMINISTRASI', 'counter' => 'KASIR'],
-            (object) ['number' => 'C-003', 'service' => 'ADMINISTRASI', 'counter' => 'KASIR'],
-        ]);
-    @endphp
-
     <div x-data="displayApp" x-init="initApp()" class="broadcast-grid">
 
         <div class="header-section">
             <div class="brand-wrapper">
-                <img src="{{ $settings->logo }}" alt="Logo" class="brand-logo">
-                <div class="company-name">{{ $settings->company_name }}</div>
+                <img :src="setting.logo" alt="Logo" class="brand-logo" x-show="setting.logo" style="display: none;">
+                <div class="company-name" x-text="setting.name">Loading...</div>
             </div>
             <div class="clock-wrapper">
                 <div class="clock-display" x-text="currentTime">--.--</div>
@@ -556,30 +559,29 @@
         <div class="left-column">
             <div class="media-card">
                 <div class="media-content">
-                    @if ($settings->media_type === 'video')
-                        <video autoplay loop muted playsinline>
-                            <source src="{{ $settings->video_url }}" type="video/mp4">
-                        </video>
-                    @else
+                    <template x-if="setting.media_type === 'video'">
+                        <video autoplay loop muted playsinline :src="setting.video"></video>
+                    </template>
+
+                    <template x-if="setting.media_type === 'image'">
                         <div id="broadcastSlide" class="carousel slide carousel-fade h-100" data-bs-ride="carousel"
                             data-bs-interval="8000">
                             <div class="carousel-inner h-100">
-                                @foreach ($settings->slideshow_images as $index => $image)
-                                    <div class="carousel-item h-100 {{ $index === 0 ? 'active' : '' }}">
-                                        <img src="{{ $image }}" alt="Slide">
+                                <template x-for="(image, index) in setting.slideshow" :key="index">
+                                    <div class="carousel-item h-100" :class="{ 'active': index === 0 }">
+                                        <img :src="image" alt="Slide" class="d-block w-100 h-100"
+                                            style="object-fit: cover;">
                                     </div>
-                                @endforeach
+                                </template>
                             </div>
                         </div>
-                    @endif
+                    </template>
                 </div>
                 <div class="card-footer-ticker">
-                    <div class="ticker-label">
-                        <i class="fas fa-info-circle me-2"></i> INFO
-                    </div>
+                    <div class="ticker-label"><i class="fas fa-info-circle me-2"></i> INFO</div>
                     <div style="flex:1; overflow:hidden; margin-top: 7px;">
-                        <marquee class="ticker-text" scrollamount="10">
-                            {{ $settings->running_text }}
+                        <marquee class="ticker-text" scrollamount="10" x-text="setting.running_text">
+                            Memuat Informasi...
                         </marquee>
                     </div>
                 </div>
@@ -588,59 +590,80 @@
 
         <div class="right-column">
             <div class="active-ticket-card">
-                @if ($currentQueue)
-                    <div class="ticket-header">
-                        <div class="status-pill">
-                            <span class="pulse-dot"></span>
-                            <span>SEDANG DIPANGGIL</span>
+                <template x-if="current">
+                    <div class="w-100 h-100 d-flex flex-column">
+                        <div class="ticket-header">
+                            <div class="status-pill">
+                                <span class="pulse-dot"></span>
+                                <span>SEDANG DIPANGGIL</span>
+                            </div>
+                            <div class="ticket-label">Nomor Antrian</div>
+                            <div class="ticket-number" x-text="current.ticket?.ticket_number"></div>
                         </div>
-
-                        <div class="ticket-label">Nomor Antrian</div>
-
-                        <div class="ticket-number text-wrap"
-                            :style="`font-size: ${getFontSize(currentNumber, 'ticket')} !important;`"
-                            x-text="currentNumber">
-                        </div>
-                    </div>
-
-                    <div class="destination-area">
-                        <div class="service-name text-wrap" x-text="currentService" style="font-size: 1.2rem;">
-                            {{ $currentQueue->service }}
-                        </div>
-
-                        <div class="counter-badge">
-                            <i class="fas fa-map-marker-alt text-warning"></i>
-                            <span class="location-text" x-text="currentCounter">{{ $currentQueue->counter }}</span>
-                        </div>
-                    </div>
-                @else
-                    <div class="idle-content">
-                        <i class="fas fa-coffee idle-icon"></i>
-                        <div class="idle-text">Belum Ada Antrian</div>
-                        <div style="font-size: 0.9rem; margin-top: 10px;">Silahkan Menunggu</div>
-                    </div>
-                @endif
-            </div>
-
-            <div class="history-ticket-card">
-                <div class="history-header">
-                    <i class="fas fa-clock"></i> Riwayat Panggilan
-                </div>
-                <div class="d-flex flex-column border-top">
-                    @forelse ($history as $h)
-                        <div class="history-item">
-                            <span class="h-num">{{ $h->number }}</span>
-                            <div class="h-details">
-                                <span class="h-service">{{ $h->service }}</span>
-                                <span class="h-counter">{{ $h->counter }}</span>
+                        <div class="destination-area">
+                            <div class="service-name text-wrap text-center" x-text="current.service?.name"></div>
+                            <div class="counter-badge">
+                                <i class="fas fa-chevron-circle-right text-warning"></i>
+                                <span class="counter-text" x-text="current.counter?.name"></span>
                             </div>
                         </div>
-                    @empty
-                        <div class="empty-history">
-                            <i class="far fa-folder-open mb-2" style="display:block; font-size: 1.5rem; opacity: 0.5;"></i>
-                            Belum ada riwayat panggilan
+                    </div>
+                </template>
+                <template x-if="!current">
+                    <div class="empty-ticket-content" x-transition:enter="fadeIn">
+                        <div class="empty-ticket-main">
+                            <i class="fas fa-mug-hot empty-ticket-icon"></i>
+                            <div class="empty-ticket-text"
+                                style="font-size: 1.4rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: rgba(255,255,255,0.4);">
+                                Belum Ada Antrian
+                            </div>
                         </div>
-                    @endforelse
+                        <div class="empty-ticket-footer">
+                            <div
+                                style="font-size: 0.9rem; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 1px;">
+                                Silahkan Menunggu
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </div>
+            <div class="history-ticket-card flex-grow-1 d-flex flex-column overflow-hidden">
+                <div class="history-header">
+                    <i class="fas fa-users-cog text-success"></i> Sedang Dilayani
+                </div>
+                <div class="flex-grow-1 overflow-auto pe-1">
+                    <template x-for="active in activeCounters" :key="'active-' + active.id">
+                        <div class="history-item border-start border-4 border-success">
+                            <span class="h-num text-success fw-bold" x-text="active.ticket?.ticket_number"></span>
+                            <div class="h-details">
+                                <span class="h-service text-white" x-text="active.service?.name"></span>
+                                <span class="h-counter" x-text="active.counter?.name"></span>
+                            </div>
+                        </div>
+                    </template>
+                    <template x-if="activeCounters.length === 0">
+                        <div class="empty-history">Tidak ada loket aktif</div>
+                    </template>
+                </div>
+            </div>
+
+            <div class="history-ticket-card flex-grow-1 d-flex flex-column overflow-hidden">
+                <div class="history-header">
+                    <i class="fas fa-history text-secondary"></i> Riwayat Selesai
+                </div>
+                <div class="flex-grow-1 overflow-auto pe-1">
+                    <template x-for="h in history" :key="'hist-' + h.id">
+                        <div class="history-item opacity-75">
+                            <span class="h-num text-dim" x-text="h.ticket?.ticket_number"></span>
+                            <div class="h-details">
+                                <span class="h-service" x-text="h.service?.name"></span>
+                                <span class="h-counter" x-text="h.counter?.name"></span>
+                            </div>
+                        </div>
+                    </template>
+                    <template x-if="history.length === 0">
+                        <div class="empty-history">Belum ada riwayat</div>
+                    </template>
                 </div>
             </div>
         </div>
@@ -655,14 +678,16 @@
             </div>
 
             <div style="font-family: 'Oswald', sans-serif; font-size: 14rem; font-weight: 700; line-height: 1;"
-                x-text="tempNumber"></div>
+                x-text="currentCall.ticket?.ticket_number"></div>
 
-            <div style="font-size: 2rem; margin-top: 30px; font-weight: 700; opacity: 0.9;" x-text="tempService"></div>
+            <div style="font-size: 2rem; margin-top: 30px; font-weight: 700; opacity: 0.9;"
+                x-text="currentCall.service?.name">
+            </div>
 
             <div
                 style="font-size: 3rem; font-weight: 700; background: white; color: var(--accent); padding: 15px 60px; border-radius: 100px; margin-top: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.5);">
-                <i class="fas fa-arrow-right-circle me-3"></i>
-                <span x-text="tempCounter"></span>
+                <i class="fas fa-chevron-circle-right text-warning me-3"></i>
+                <span x-text="currentCall.counter?.name"></span>
             </div>
         </div>
 
@@ -671,7 +696,6 @@
                 <i class="fas fa-tv start-icon"></i>
                 <h1 class="start-title">Display Antrian</h1>
                 <p class="start-subtitle">Klik tombol di bawah untuk memulai layar penuh</p>
-
                 <button @click="enterFullscreen()" class="start-btn">
                     <i class="fas fa-play me-2"></i> MULAI DISPLAY
                 </button>
@@ -686,92 +710,116 @@
             return {
                 isCalling: false,
                 showStartOverlay: true,
-                currentNumber: '{{ $currentQueue?->number }}',
-                currentService: '{{ $currentQueue?->service }}',
-                currentCounter: '{{ $currentQueue?->counter }}',
-                tempNumber: '',
-                tempService: '',
-                tempCounter: '',
+                isLoading: true,
+
+                setting: {
+                    logo: '',
+                    name: '',
+                    media_type: 'image',
+                    video: '',
+                    slideshow: [],
+                    running_text: 'Memuat Data...'
+                },
+
+                activeCounters: [],
+                history: [],
+                current: null,
+
+                // Dummy structure for animation initial state
+                currentCall: {
+                    ticket: {
+                        ticket_number: '---'
+                    },
+                    counter: {
+                        name: '---'
+                    },
+                    service: {
+                        name: '---'
+                    }
+                },
+
                 currentTime: '--.--',
                 currentDate: '',
 
-                initApp() {
+                async initApp() {
                     this.updateTime();
                     setInterval(() => this.updateTime(), 1000);
+                    await this.fetchDisplay();
 
+                    // Keydown Simulator
                     window.addEventListener('keydown', (e) => {
                         if (e.code === 'Space') {
-                            this.call('A-999', 'LOKET 1', 'POLI JANTUNG & PEMBULUH DARAH');
+                            this.call({
+                                ticket: {
+                                    ticket_number: 'A-123'
+                                },
+                                counter: {
+                                    name: 'LOKET TES'
+                                },
+                                service: {
+                                    name: 'POLI TES'
+                                }
+                            });
                         }
                     });
                 },
 
-                enterFullscreen() {
-                    const elem = document.documentElement;
+                async fetchDisplay() {
+                    try {
+                        const res = await fetch("{{ route('fetch.display.data') }}");
+                        const result = await res.json();
 
-                    if (elem.requestFullscreen) {
-                        elem.requestFullscreen();
-                    } else if (elem.webkitRequestFullscreen) {
-                        elem.webkitRequestFullscreen();
-                    } else if (elem.msRequestFullscreen) {
-                        elem.msRequestFullscreen();
+                        this.setting = result.setting;
+                        this.activeCounters = result.active_counters || [];
+                        this.history = result.history || [];
+
+                        if (!this.isCalling && result.current) {
+                            this.current = result.current;
+                        }
+                    } catch (e) {
+                        console.error('Display fetch failed', e);
+                    } finally {
+                        this.isLoading = false;
                     }
-
-                    this.showStartOverlay = false;
-
-                    // const audio = new Audio('/empty.mp3'); 
-                    // audio.play().catch(e => {});
                 },
 
-                getFontSize(text, type) {
-                    const length = text ? text.length : 0;
+                call(incomingData) {
+                    if (this.isCalling) return;
 
-                    if (type === 'ticket') {
-                        if (length <= 5) return '8rem';
-                        if (length <= 7) return '6rem';
-                        return '4.5rem';
-                    }
+                    this.fetchDisplay().then(() => {
+                        console.log("Background data updated");
+                    });
 
-                    if (type === 'service') {
-                        if (length <= 15) return '1.2rem';
-                        if (length <= 25) return '1.2rem';
-                        return '1rem';
-                    }
+                    this.currentCall = incomingData;
+                    this.isCalling = true;
 
-                    return '1rem';
+                    setTimeout(() => {
+                        this.isCalling = false;
+                        this.current = incomingData;
+                    }, 5000);
+                },
+
+                enterFullscreen() {
+                    const elem = document.documentElement;
+                    if (elem.requestFullscreen) elem.requestFullscreen();
+                    else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen();
+                    else if (elem.msRequestFullscreen) elem.msRequestFullscreen();
+                    this.showStartOverlay = false;
                 },
 
                 updateTime() {
                     const now = new Date();
-
                     this.currentTime = now.toLocaleTimeString('id-ID', {
                         hour: '2-digit',
                         minute: '2-digit',
                         hour12: false
                     });
-
                     this.currentDate = now.toLocaleDateString('id-ID', {
                         weekday: 'long',
                         day: 'numeric',
                         month: 'long',
                         year: 'numeric'
                     });
-                },
-
-                call(number, counter, service) {
-                    if (this.isCalling) return;
-
-                    this.tempNumber = number;
-                    this.tempCounter = counter;
-                    this.tempService = service;
-                    this.isCalling = true;
-
-                    setTimeout(() => {
-                        this.isCalling = false;
-                        this.currentNumber = number;
-                        this.currentCounter = counter;
-                        this.currentService = service;
-                    }, 5000);
                 }
             }
         }

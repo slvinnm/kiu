@@ -7,6 +7,7 @@ use App\Models\Ticket;
 use App\Models\TicketStep;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class TouchController extends Controller
 {
@@ -15,7 +16,14 @@ class TouchController extends Controller
         return view('frontend.touch.index');
     }
 
-    public function getTouchData(Service $service)
+    public function getServices()
+    {
+        $services = Service::active()->latest()->get();
+
+        return response()->json($services, 200);
+    }
+
+    public function getTicket(Service $service)
     {
         try {
             if (! $service->is_active) {
@@ -96,7 +104,7 @@ class TouchController extends Controller
                 'status' => 'success',
                 'ticket' => $ticket->load('steps.service'),
             ]);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
 
             Log::error('Queue Error', [
                 'service_id' => $service->id,

@@ -11,6 +11,12 @@ class Ticket extends Model
     /** @use HasFactory<\Database\Factories\TicketFactory> */
     use HasFactory, HasUlids;
 
+    public const STATUS = [
+        'active',
+        'completed',
+        'cancelled',
+    ];
+
     protected $fillable = [
         'ticket_number',
         'customer_name',

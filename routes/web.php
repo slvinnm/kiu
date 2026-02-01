@@ -3,8 +3,8 @@
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\CounterController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\MainDisplayController;
 use App\Http\Controllers\FetchController;
+use App\Http\Controllers\MainDisplayController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\ServiceRouteController;
 use App\Http\Controllers\TouchController;
@@ -55,11 +55,14 @@ Route::group(['prefix' => 'fetch'], function () {
     Route::get('/get-csrf-token', [FetchController::class, 'getCsrfToken'])
         ->name('fetch.get-csrf-token');
 
-    Route::get('/get-services', [FetchController::class, 'getServices'])
+    Route::get('/get-services', [TouchController::class, 'getServices'])
         ->name('fetch.get-services');
 
-    Route::post('/touch/{service}/get-data', [TouchController::class, 'getTouchData'])
-        ->name('fetch.get-touch-data');
+    Route::post('/get-ticket/{service}', [TouchController::class, 'getTicket'])
+        ->name('fetch.get-ticket');
+
+    Route::get('/display-data', [MainDisplayController::class, 'getDisplayData'])
+        ->name('fetch.display.data');
 
     // OLD ROUTES FOR DASHBOARD
 

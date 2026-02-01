@@ -19,13 +19,6 @@ class FetchController extends Controller
         return response()->json(['token' => csrf_token()], 200);
     }
 
-    public function getServices()
-    {
-        $services = Service::active()->latest()->get();
-
-        return response()->json($services, 200);
-    }
-
     public function getCurrentQueue()
     {
         $user = Auth::user();
@@ -302,12 +295,12 @@ class FetchController extends Controller
         $settings = (object) [
             'logo' => 'https://cdn-icons-png.flaticon.com/512/3063/3063822.png',
             'media_type' => 'image',
-            'video_url' => 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-            'slideshow_images' => [
+            'video' => 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+            'slideshow' => [
                 'https://images.unsplash.com/photo-1589829085413-56de8ae18c73?q=80&w=2000&auto=format&fit=crop',
                 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2000&auto=format&fit=crop',
             ],
-            'company_name' => 'RSUD KOTA',
+            'name' => 'RSUD KOTA',
             'running_text' => 'PENGUMUMAN: Harap menjaga kebersihan ruang tunggu. Dilarang merokok di area rumah sakit.',
         ];
 

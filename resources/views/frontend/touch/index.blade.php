@@ -332,8 +332,7 @@
                     <div class="cards-grid">
                         <template x-for="(service, index) in services" :key="service.id">
                             <div class="service-card-wrapper h-100">
-                                <button type="button" class="service-card-btn submit-btn"
-                                    @click="getTouchData(service.id)">
+                                <button type="button" class="service-card-btn submit-btn" @click="getTicket(service.id)">
 
                                     <div class="service-tile" :class="getColorClass(index)">
                                         <div class="tile-content z-2">
@@ -464,12 +463,12 @@
                     this.fetchServices();
                 },
 
-                async getTouchData(serviceId) {
+                async getTicket(serviceId) {
                     if (this.isSubmitting) return;
 
                     this.isSubmitting = true;
 
-                    var actionUrlTemplate = "{{ route('fetch.get-touch-data', ['service' => ':ID']) }}";
+                    var actionUrlTemplate = "{{ route('fetch.get-ticket', ['service' => ':ID']) }}";
                     const actionUrl = actionUrlTemplate.replace(':ID', serviceId);
 
                     const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
