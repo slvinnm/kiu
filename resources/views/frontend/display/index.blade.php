@@ -540,7 +540,7 @@
         ]);
     @endphp
 
-    <div x-data="broadcastSystem" x-init="initApp()" class="broadcast-grid">
+    <div x-data="displayApp" x-init="initApp()" class="broadcast-grid">
 
         <div class="header-section">
             <div class="brand-wrapper">
@@ -682,8 +682,8 @@
 
 @section('js')
     <script>
-        document.addEventListener('alpine:init', () => {
-            Alpine.data('broadcastSystem', () => ({
+        function displayApp() {
+            return {
                 isCalling: false,
                 showStartOverlay: true,
                 currentNumber: '{{ $currentQueue?->number }}',
@@ -773,7 +773,7 @@
                         this.currentService = service;
                     }, 5000);
                 }
-            }));
-        });
+            }
+        }
     </script>
 @endsection

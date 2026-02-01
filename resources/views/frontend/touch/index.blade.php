@@ -333,7 +333,7 @@
                         <template x-for="(service, index) in services" :key="service.id">
                             <div class="service-card-wrapper h-100">
                                 <button type="button" class="service-card-btn submit-btn"
-                                    @click="getQueueNumber(service.id)">
+                                    @click="getTouchData(service.id)">
 
                                     <div class="service-tile" :class="getColorClass(index)">
                                         <div class="tile-content z-2">
@@ -427,7 +427,7 @@
                     setInterval(() => this.updateTime(), 1000);
 
                     setInterval(() => {
-                        fetch("{{ route('csrf.refresh') }}")
+                        fetch("{{ route('fetch.get-csrf-token') }}")
                             .then(r => r.json())
                             .then(d => {
                                 document.querySelector('meta[name="csrf-token"]')
@@ -448,7 +448,7 @@
 
                 async fetchServices() {
                     try {
-                        let url = "{{ route('ajax.touch') }}";
+                        let url = "{{ route('fetch.get-services') }}";
                         let response = await fetch(url);
                         let data = await response.json();
                         this.services = data;
@@ -464,12 +464,12 @@
                     this.fetchServices();
                 },
 
-                async getQueueNumber(serviceId) {
+                async getTouchData(serviceId) {
                     if (this.isSubmitting) return;
 
                     this.isSubmitting = true;
 
-                    var actionUrlTemplate = "{{ route('ajax.touch.get-queue-number', ['service' => ':ID']) }}";
+                    var actionUrlTemplate = "{{ route('fetch.get-touch-data', ['service' => ':ID']) }}";
                     const actionUrl = actionUrlTemplate.replace(':ID', serviceId);
 
                     const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');

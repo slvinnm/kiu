@@ -1,10 +1,10 @@
 <?php
 
-use App\Http\Controllers\AjaxController;
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\CounterController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DisplayController;
+use App\Http\Controllers\FetchController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\ServiceRouteController;
 use App\Http\Controllers\TouchController;
@@ -44,43 +44,46 @@ Route::group(['prefix' => 'dashboard', 'middleware' => 'auth'], function () {
     Route::resource('counters', CounterController::class);
 });
 
-Route::group(['prefix' => 'ajax'], function () {
+Route::get('/touch', [TouchController::class, 'index'])
+    ->name('touch.index');
 
-    Route::get('/touch', [AjaxController::class, 'touch'])
-        ->name('ajax.touch');
+Route::get('/display', [DisplayController::class, 'index'])
+    ->name('display.index');
 
-    Route::post('/touch/{service}/get-queue-number', [TouchController::class, 'getQueueNumber'])
-        ->name('ajax.touch.get-queue-number');
+Route::group(['prefix' => 'fetch'], function () {
 
-    Route::get('/dashboard/staff/current-queue', [AjaxController::class, 'getCurrentQueue'])
-        ->name('ajax.dashboard.staff.current-queue');
+    Route::get('/get-csrf-token', [FetchController::class, 'getCsrfToken'])
+        ->name('fetch.get-csrf-token');
 
-    Route::put('/counters/{counter}/set-status', [AjaxController::class, 'setStatusCounter'])
-        ->name('ajax.set-status-counter');
+    Route::get('/get-services', [FetchController::class, 'getServices'])
+        ->name('fetch.get-services');
 
-    Route::put('/queues/{queue}/call', [AjaxController::class, 'callQueue'])
-        ->name('ajax.queues.call');
+    Route::post('/touch/{service}/get-data', [TouchController::class, 'getTouchData'])
+        ->name('fetch.get-touch-data');
 
-    Route::put('/queues/{queue}/direct-call', [AjaxController::class, 'directCallQueue'])
-        ->name('ajax.queues.direct-call');
+    // OLD ROUTES FOR DASHBOARD
 
-    Route::put('/queues/{queue}/skip', [AjaxController::class, 'skipQueue'])
-        ->name('ajax.queues.skip');
+    Route::get('/dashboard/staff/current-queue', [FetchController::class, 'getCurrentQueue'])
+        ->name('fetch.dashboard.staff.current-queue');
 
-    Route::put('/queues/{queue}/complete', [AjaxController::class, 'completeQueue'])
-        ->name('ajax.queues.complete');
+    Route::put('/counters/{counter}/set-status', [FetchController::class, 'setStatusCounter'])
+        ->name('fetch.set-status-counter');
 
-    Route::put('/services/{service}/toggle-status', [AjaxController::class, 'toggleStatusService'])
-        ->name('ajax.toggle-status-service');
+    Route::put('/queues/{queue}/call', [FetchController::class, 'callQueue'])
+        ->name('fetch.queues.call');
 
-    Route::get('/display/data', [AjaxController::class, 'displayData'])
-        ->name('ajax.display.data');
+    Route::put('/queues/{queue}/direct-call', [FetchController::class, 'directCallQueue'])
+        ->name('fetch.queues.direct-call');
+
+    Route::put('/queues/{queue}/skip', [FetchController::class, 'skipQueue'])
+        ->name('fetch.queues.skip');
+
+    Route::put('/queues/{queue}/complete', [FetchController::class, 'completeQueue'])
+        ->name('fetch.queues.complete');
+
+    Route::put('/services/{service}/toggle-status', [FetchController::class, 'toggleStatusService'])
+        ->name('fetch.toggle-status-service');
+
+    Route::get('/display/data', [FetchController::class, 'displayData'])
+        ->name('fetch.display.data');
 });
-
-Route::get('/touch', [TouchController::class, 'index'])->name('touch.index');
-
-Route::get('/csrf-refresh', function () {
-    return response()->json(['token' => csrf_token()]);
-})->name('csrf.refresh');
-
-Route::get('/display', [DisplayController::class, 'index'])->name('display.index');

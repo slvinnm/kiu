@@ -15,7 +15,7 @@ class TouchController extends Controller
         return view('frontend.touch.index');
     }
 
-    public function getQueueNumber(Service $service)
+    public function getTouchData(Service $service)
     {
         try {
             if (! $service->is_active) {

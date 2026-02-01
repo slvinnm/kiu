@@ -10,7 +10,6 @@ Broadcast::channel('service.{serviceId}', function ($user, $serviceId) {
     return $user->canAccessService($serviceId);
 });
 
-// public test
 Broadcast::channel('public-channel', function () {
     return true;
 });

@@ -511,7 +511,7 @@
                     if (showLoading) this.isLoading = true;
 
                     try {
-                        const url = "{{ route('ajax.dashboard.staff.current-queue') }}";
+                        const url = "{{ route('fetch.dashboard.staff.current-queue') }}";
                         const res = await fetch(url, {
                             method: 'GET',
                             headers: {
@@ -586,33 +586,33 @@
                 },
 
                 callQueue(id) {
-                    const url = "{{ route('ajax.queues.call', ':ID') }}"
+                    const url = "{{ route('fetch.queues.call', ':ID') }}"
                         .replace(':ID', id);
 
                     this.sendAction(url);
                 },
 
                 directCallQueue(id) {
-                    const url = "{{ route('ajax.queues.direct-call', ':ID') }}"
+                    const url = "{{ route('fetch.queues.direct-call', ':ID') }}"
                         .replace(':ID', id);
 
                     this.sendAction(url);
                 },
 
                 completeQueue(id) {
-                    const url = "{{ route('ajax.queues.complete', ':ID') }}"
+                    const url = "{{ route('fetch.queues.complete', ':ID') }}"
                         .replace(':ID', id);
                     this.sendAction(url);
                 },
 
                 skipQueue(id) {
-                    const url = "{{ route('ajax.queues.skip', ':ID') }}"
+                    const url = "{{ route('fetch.queues.skip', ':ID') }}"
                         .replace(':ID', id);
                     this.sendAction(url);
                 },
 
                 updateStatus(status) {
-                    const url = "{{ route('ajax.set-status-counter', ':ID') }}"
+                    const url = "{{ route('fetch.set-status-counter', ':ID') }}"
                         .replace(':ID', this.counter.id);
 
                     this.sendAction(url, 'PUT', {

@@ -12,9 +12,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-class AjaxController extends Controller
+class FetchController extends Controller
 {
-    public function touch()
+    public function getCsrfToken()
+    {
+        return response()->json(['token' => csrf_token()], 200);
+    }
+
+    public function getServices()
     {
         $services = Service::active()->latest()->get();
 
